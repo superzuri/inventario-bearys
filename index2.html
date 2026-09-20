@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beary's - Inventario</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 15px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        h2 {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .producto {
+            background-color: white;
+            margin: 6px 0;
+            padding: 10px;
+            border-radius: 8px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .producto input {
+            width: 70px;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #aaa;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            font-size: 17px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #resultado {
+            background-color: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            white-space: pre-line;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🐻 Beary's - Inventario</h1>
+
+    <!-- BEBIDAS -->
+    <h2>🥤 Bebidas</h2>
+
+    <div id="bebidas"></div>
+
+    <!-- COMIDA -->
+    <h2>🍔 Comida</h2>
+
+    <div id="comida"></div>
+
+    <!-- BODEGA -->
+    <h2>📦 Bodega</h2>
+
+    <div id="bodega"></div>
+
+    <!-- LIMPIEZA -->
+    <h2>🧼 Limpieza</h2>
+
+    <div id="limpieza"></div>
+
+
+    <button onclick="generarLista()">📋 Generar lista</button>
+
+    <button onclick="copiarLista()">📋 Copiar lista</button>
+
+    <div id="resultado"></div>
+
+
+    <script>
+
+        const bebidas = [
+            "Agua Santa María",
+            "Café",
+            "Café descafeinado",
+            "Caramelo",
+            "Chai",
+            "Chai Mango",
+            "Coca",
+            "Coca Light",
+            "Coca Zero",
+            "Concentrado de fresa",
+            "Concentrado de mango",
+            "Concentrado de maracuyá",
+            "Matcha",
+            "Mundet",
+            "Pink lemonade",
+            "Sprite",
+            "Taro",
+            "Té de frutos",
+            "Té de granada",
+            "Té Earl Grey",
+            "Té English",
+            "Té fresa/vainilla",
+            "Té verde",
+            "Té limón",
+            "Té limón/jengibre",
+            "Té mango/fresa",
+            "Té manzanilla",
+            "Té manzanilla/vainilla",
+            "Topochico"
+        ];
+
+
+        const comida = [
+            "Aguacate",
+            "Cajeta",
+            "Catsup",
+            "Cebolla",
+            "Chapatas",
+            "Chile serrano",
+            "Chocolate Abuelita",
+            "Chocolate de decoración",
+            "Cochinita",
+            "Crema",
+            "Crema batida",
+            "Croissant",
+            "Frijoles",
+            "Galleta Lotus",
+            "Galleta Oreo",
+            "Granola",
+            "Harina de waffles",
+            "Helado de cookie and cream",
+            "Helado de fresa",
+            "Huevo",
+            "Jamón",
+            "Jitomate",
+            "Lechuga",
+            "Limón",
+            "Maple",
+            "Manzana",
+            "Mayonesa",
+            "Miel",
+            "Mostaza",
+            "Nutella",
+            "Papas",
+            "Pollo",
+            "Relleno de chocolate",
+            "Relleno de dulce de leche",
+            "Relleno de frutos rojos",
+            "Relleno de mascarpone",
+            "Salsa inglesa",
+            "Salsa Maggi",
+            "Salsa roja",
+            "Salsa Valentina",
+            "Salsa verde",
+            "Suavicremas",
+            "Tocino en tiras",
+            "Tocino en trozos",
+            "Tortillas",
+            "Turín"
+        ];
+
+
+        const bodega = [
+            "Bolsas para pollo y cochinita",
+            "Bolsas para trapos",
+            "Comandas",
+            "Cucharas",
+            "Guantes",
+            "Mangas",
+            "Mangas desechables",
+            "Osos grandes",
+            "Osos para bebidas",
+            "Papel encerado",
+            "Popotes",
+            "Rejillas",
+            "Servilletas",
+            "Tapas de espresso",
+            "Tapas domo",
+            "Tapas negras",
+            "Tapas planas",
+            "Tapas para porciones (llevar)",
+            "Tenedores",
+            "Vasos de 10 oz",
+            "Vasos de 12 oz",
+            "Vasos de 16 oz",
+            "Vasos de espresso",
+            "Vasos para porciones (llevar)",
+            "Vasos transparentes",
+            "Velcro"
+        ];
+
+
+        const limpieza = [
+            "Ajax de baño",
+            "Ajax limón",
+            "Cafiza",
+            "Cafiza molinos",
+            "Cloro",
+            "Drano",
+            "Esponja de carita",
+            "Esponja para vasos",
+            "Fabuloso",
+            "Fibra de acero",
+            "Fibra verde",
+            "Jabón de manos",
+            "Jabón de trastes",
+            "Limpiador de horno",
+            "Mechudo",
+            "Papel de baño",
+            "Piedra pómez",
+            "Protector de horno",
+            "Servitoallas",
+            "Trapos limpios",
+            "Windex"
+        ];
+
+
+        function mostrarProductos(lista, lugar) {
+
+            const contenedor = document.getElementById(lugar);
+
+            lista.forEach(function(producto) {
+
+                contenedor.innerHTML += `
+                    <div class="producto">
+                        <span>${producto}</span>
+
+                        <input 
+                            type="number" 
+                            min="0"
+                            placeholder="Cantidad"
+                            data-producto="${producto}"
+                        >
+                    </div>
+                `;
+
+            });
+
+        }
+
+
+        mostrarProductos(bebidas, "bebidas");
+        mostrarProductos(comida, "comida");
+        mostrarProductos(bodega, "bodega");
+        mostrarProductos(limpieza, "limpieza");
+
+
+        function generarLista() {
+
+            let lista = "";
+
+            const productos = document.querySelectorAll("input");
+
+            productos.forEach(function(input) {
+
+                if (input.value !== "") {
+
+                    lista += input.dataset.producto + " " + input.value + "\n";
+
+                }
+
+            });
+
+            document.getElementById("resultado").innerText = lista;
+
+        }
+
+
+        function copiarLista() {
+
+            const texto = document.getElementById("resultado").innerText;
+
+            navigator.clipboard.writeText(texto);
+
+            alert("¡Lista copiada! 🐻");
+
+        }
+
+    </script>
+
+</body>
+</html>
