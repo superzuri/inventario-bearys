@@ -1,302 +1,2033 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beary's - Inventario</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 15px;
-        }
+<title>Beary's Inventario 🐻</title>
 
-        h1 {
-            text-align: center;
-        }
+<style>
 
-        h2 {
-            background-color: #333;
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-        }
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
 
-        .producto {
-            background-color: white;
-            margin: 6px 0;
-            padding: 10px;
-            border-radius: 8px;
+body{
+    font-family:Arial, sans-serif;
+    background:
+        radial-gradient(circle at 10% 5%, rgba(255,255,255,.85), transparent 28%),
+        radial-gradient(circle at 90% 90%, rgba(255,175,200,.45), transparent 35%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,.5), transparent 25%),
+        #ffdce8;
+    color:#4d3a40;
+    min-height:100vh;
+    transition:.35s;
+}
 
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+/* =========================
+   CONTENEDOR
+========================= */
 
-        .producto input {
-            width: 70px;
-            padding: 8px;
-            font-size: 16px;
-            border: 1px solid #aaa;
-            border-radius: 6px;
-        }
+.contenedor{
+    max-width:650px;
+    margin:auto;
+    padding:18px 12px 35px;
+}
 
-        button {
-            width: 100%;
-            padding: 14px;
-            margin-top: 10px;
-            font-size: 17px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
+/* =========================
+   ENCABEZADO
+========================= */
 
-        #resultado {
-            background-color: white;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 8px;
-            white-space: pre-line;
-        }
-    </style>
+.encabezado{
+    position:relative;
+    overflow:hidden;
+
+    background:
+        linear-gradient(145deg,#ffffff 0%,#fff8fb 55%,#ffeaf1 100%);
+
+    border:1px solid rgba(255,255,255,.9);
+    border-radius:28px;
+
+    padding:24px 18px 20px;
+    text-align:center;
+
+    box-shadow:
+        0 12px 30px rgba(170,90,120,.16),
+        0 3px 8px rgba(120,70,90,.08),
+        inset 0 1px 0 white;
+
+    margin-bottom:14px;
+}
+
+/* decoraciones del encabezado */
+
+.encabezado::before{
+    content:"♡";
+    position:absolute;
+    left:18px;
+    top:12px;
+    font-size:34px;
+    color:#f4a8bf;
+    opacity:.45;
+    transform:rotate(-15deg);
+}
+
+.encabezado::after{
+    content:"☕";
+    position:absolute;
+    right:17px;
+    bottom:10px;
+    font-size:34px;
+    opacity:.13;
+    transform:rotate(12deg);
+}
+
+.ositos{
+    font-size:20px;
+    letter-spacing:7px;
+    margin-bottom:6px;
+    opacity:.9;
+}
+
+.titulo{
+    font-size:29px;
+    font-weight:800;
+    color:#5a3d47;
+    text-shadow:0 2px 0 white;
+}
+
+.subtitulo{
+    margin-top:7px;
+    font-size:13px;
+    color:#987b85;
+}
+
+.fecha{
+    margin-top:10px;
+    display:inline-block;
+
+    background:#fff0f5;
+    border:1px solid #ffd5e3;
+
+    padding:6px 12px;
+    border-radius:20px;
+
+    font-size:12px;
+    color:#9b6578;
+
+    box-shadow:0 3px 8px rgba(170,90,120,.08);
+}
+
+/* =========================
+   CONTROLES
+========================= */
+
+.controles{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:15px;
+}
+
+.busqueda{
+    flex:1;
+    position:relative;
+}
+
+.busqueda input{
+    width:100%;
+    border:none;
+    outline:none;
+
+    background:rgba(255,255,255,.88);
+
+    border:1px solid rgba(255,255,255,.9);
+    border-radius:17px;
+
+    padding:12px 15px 12px 40px;
+
+    font-size:14px;
+    color:#57434a;
+
+    box-shadow:
+        0 6px 15px rgba(160,80,110,.10),
+        inset 0 1px 2px rgba(100,50,70,.04);
+
+    transition:.25s;
+}
+
+.busqueda input:focus{
+    border-color:#f4adc5;
+
+    box-shadow:
+        0 0 0 3px rgba(255,175,200,.22),
+        0 8px 18px rgba(160,80,110,.12);
+}
+
+.busqueda::before{
+    content:"🔎";
+    position:absolute;
+    left:14px;
+    top:10px;
+    font-size:16px;
+    z-index:2;
+}
+
+/* =========================
+   MODO OSCURO
+========================= */
+
+.temaControl{
+    display:flex;
+    align-items:center;
+    gap:5px;
+
+    padding:7px 8px;
+
+    background:rgba(255,255,255,.55);
+    border:1px solid rgba(255,255,255,.75);
+
+    border-radius:20px;
+
+    box-shadow:0 4px 10px rgba(100,50,70,.08);
+}
+
+.temaLuna{
+    font-size:14px;
+    opacity:.75;
+}
+
+.switchTema{
+    position:relative;
+    display:inline-block;
+    width:38px;
+    height:21px;
+}
+
+.switchTema input{
+    display:none;
+}
+
+.sliderTema{
+    position:absolute;
+    cursor:pointer;
+    inset:0;
+
+    background:#e8c8d4;
+    border-radius:30px;
+
+    box-shadow:
+        inset 0 2px 4px rgba(0,0,0,.12),
+        0 2px 5px rgba(100,50,70,.08);
+
+    transition:.3s;
+}
+
+.sliderTema::before{
+    content:"";
+    position:absolute;
+
+    width:15px;
+    height:15px;
+
+    left:3px;
+    top:3px;
+
+    background:white;
+    border-radius:50%;
+
+    box-shadow:0 2px 5px rgba(0,0,0,.2);
+
+    transition:.3s;
+}
+
+.switchTema input:checked + .sliderTema{
+    background:#806b91;
+}
+
+.switchTema input:checked + .sliderTema::before{
+    transform:translateX(17px);
+}
+
+/* =========================
+   SECCIONES
+========================= */
+
+.seccion{
+    margin-bottom:16px;
+
+    background:rgba(255,255,255,.82);
+
+    border:1px solid rgba(255,255,255,.9);
+
+    border-radius:23px;
+
+    padding:13px;
+
+    box-shadow:
+        0 10px 25px rgba(150,80,105,.13),
+        0 2px 6px rgba(100,50,70,.06),
+        inset 0 1px 0 white;
+
+    transition:.25s;
+}
+
+.seccion:hover{
+    transform:translateY(-1px);
+    box-shadow:
+        0 13px 28px rgba(150,80,105,.16),
+        0 3px 7px rgba(100,50,70,.07);
+}
+
+.tituloSeccion{
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    font-size:17px;
+    font-weight:bold;
+
+    padding:8px 10px 12px;
+
+    color:#5a4149;
+}
+
+.tituloSeccion span{
+    background:#fff0f5;
+    border-radius:13px;
+    padding:6px 8px;
+
+    box-shadow:
+        0 3px 8px rgba(150,80,105,.08);
+}
+
+/* =========================
+   PRODUCTOS
+========================= */
+
+.producto{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:10px;
+
+    background:
+        linear-gradient(145deg,#ffffff,#fffafb);
+
+    border:1px solid #f8e5ec;
+
+    border-radius:15px;
+
+    padding:10px 10px;
+
+    margin-top:7px;
+
+    box-shadow:
+        0 3px 8px rgba(120,60,85,.07),
+        inset 0 1px 0 white;
+
+    transition:.22s;
+}
+
+.producto:hover{
+    transform:translateX(2px);
+
+    border-color:#f5c9d8;
+
+    box-shadow:
+        0 6px 13px rgba(140,70,95,.11),
+        inset 0 1px 0 white;
+}
+
+.nombre{
+    font-size:14px;
+    font-weight:bold;
+    color:#5b454c;
+}
+
+.meta{
+    font-size:11px;
+    color:#a48a92;
+    margin-top:3px;
+}
+
+.producto input{
+    width:65px;
+
+    border:1px solid #ead4dc;
+
+    background:#fff7fa;
+
+    border-radius:12px;
+
+    padding:8px 6px;
+
+    text-align:center;
+
+    font-size:14px;
+    font-weight:bold;
+
+    color:#624653;
+
+    outline:none;
+
+    box-shadow:
+        inset 0 2px 4px rgba(100,50,70,.04),
+        0 2px 4px rgba(100,50,70,.05);
+
+    transition:.2s;
+}
+
+.producto input:focus{
+    border-color:#eea8c1;
+
+    background:white;
+
+    box-shadow:
+        0 0 0 3px rgba(255,173,200,.22),
+        0 3px 8px rgba(150,70,100,.10);
+}
+
+/* =========================
+   SIN RESULTADOS
+========================= */
+
+#sinResultados{
+    display:none;
+
+    text-align:center;
+
+    padding:20px;
+
+    color:#987985;
+
+    font-size:14px;
+}
+
+/* =========================
+   BOTONES
+========================= */
+
+.botones{
+    display:flex;
+    gap:10px;
+
+    margin-top:20px;
+}
+
+button{
+    flex:1;
+
+    border:none;
+    cursor:pointer;
+
+    border-radius:17px;
+
+    padding:13px 10px;
+
+    font-size:14px;
+    font-weight:bold;
+
+    transition:.22s;
+
+    box-shadow:
+        0 6px 12px rgba(130,60,90,.14),
+        inset 0 1px 0 rgba(255,255,255,.6);
+}
+
+.btnGenerar{
+    background:
+        linear-gradient(145deg,#f5a9c2,#e991b0);
+
+    color:white;
+}
+
+.btnNueva{
+    background:
+        linear-gradient(145deg,#fff,#fff3f7);
+
+    color:#85596b;
+
+    border:1px solid #f1d6e0;
+}
+
+button:hover{
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 9px 18px rgba(130,60,90,.18),
+        inset 0 1px 0 rgba(255,255,255,.7);
+}
+
+button:active{
+    transform:translateY(1px);
+}
+
+/* =========================
+   RESULTADO
+========================= */
+
+.resultado{
+    margin-top:18px;
+
+    background:
+        linear-gradient(145deg,#fffdfd,#fff3f7);
+
+    border:1px solid #f4d5e0;
+
+    border-radius:22px;
+
+    padding:15px;
+
+    box-shadow:
+        0 10px 25px rgba(150,70,100,.13),
+        inset 0 1px 0 white;
+
+    animation:aparecer .35s ease;
+}
+
+.resultado h3{
+    color:#744b5b;
+    font-size:17px;
+    margin-bottom:10px;
+}
+
+#listaResultado{
+    white-space:pre-wrap;
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:13px;
+
+    font-size:13px;
+    line-height:1.6;
+
+    color:#59444c;
+
+    border:1px solid #f3e1e7;
+
+    box-shadow:inset 0 2px 5px rgba(100,50,70,.04);
+}
+
+/* =========================
+   ANIMACIÓN
+========================= */
+
+@keyframes aparecer{
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+#animacionCute{
+    position:fixed;
+    inset:0;
+
+    display:none;
+    align-items:center;
+    justify-content:center;
+
+    background:rgba(255,220,232,.55);
+
+    backdrop-filter:blur(4px);
+
+    z-index:9999;
+}
+
+.cuteCaja{
+    background:white;
+
+    padding:25px 35px;
+
+    border-radius:28px;
+
+    text-align:center;
+
+    box-shadow:
+        0 15px 40px rgba(130,60,90,.25);
+
+    animation:cutePop .45s ease;
+}
+
+.cuteOso{
+    font-size:60px;
+    animation:osito .8s infinite alternate;
+}
+
+.cuteTexto{
+    margin-top:7px;
+
+    color:#76515e;
+
+    font-weight:bold;
+}
+
+.corazones{
+    font-size:20px;
+    margin-top:5px;
+}
+
+@keyframes cutePop{
+    0%{
+        transform:scale(.7);
+        opacity:0;
+    }
+
+    100%{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+@keyframes osito{
+    from{
+        transform:translateY(0) rotate(-3deg);
+    }
+
+    to{
+        transform:translateY(-6px) rotate(3deg);
+    }
+}
+
+/* =========================
+   MODO OSCURO
+========================= */
+
+body.modoOscuro{
+    background:
+        radial-gradient(circle at 10% 5%,rgba(120,90,120,.25),transparent 28%),
+        radial-gradient(circle at 90% 90%,rgba(90,50,90,.3),transparent 35%),
+        #211c24;
+
+    color:#eee;
+}
+
+body.modoOscuro .encabezado,
+body.modoOscuro .seccion{
+    background:
+        linear-gradient(145deg,#302731,#29232b);
+
+    border-color:#413642;
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.3),
+        inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+body.modoOscuro .titulo{
+    color:#ffe6ef;
+    text-shadow:none;
+}
+
+body.modoOscuro .subtitulo,
+body.modoOscuro .fecha{
+    color:#c6aeba;
+}
+
+body.modoOscuro .fecha{
+    background:#3b2d38;
+    border-color:#4b3946;
+}
+
+body.modoOscuro .controles .temaControl{
+    background:#302832;
+    border-color:#463844;
+}
+
+body.modoOscuro .busqueda input{
+    background:#302831;
+    color:#f4e9ee;
+    border-color:#463844;
+}
+
+body.modoOscuro .producto{
+    background:
+        linear-gradient(145deg,#352d34,#2e272e);
+
+    border-color:#473943;
+
+    box-shadow:
+        0 4px 10px rgba(0,0,0,.18);
+}
+
+body.modoOscuro .nombre{
+    color:#f5e8ed;
+}
+
+body.modoOscuro .meta{
+    color:#bda8b2;
+}
+
+body.modoOscuro .producto input{
+    background:#29232a;
+    color:#f5e8ed;
+    border-color:#4c3c47;
+}
+
+body.modoOscuro .tituloSeccion{
+    color:#f6e6ec;
+}
+
+body.modoOscuro .tituloSeccion span{
+    background:#40303b;
+}
+
+body.modoOscuro .btnNueva{
+    background:#342b32;
+    color:#f2dce5;
+    border-color:#4b3a45;
+}
+
+body.modoOscuro .resultado{
+    background:#302831;
+    border-color:#473943;
+}
+
+body.modoOscuro .resultado h3{
+    color:#f3dce5;
+}
+
+body.modoOscuro #listaResultado{
+    background:#29232a;
+    color:#eee3e8;
+    border-color:#463842;
+}
+
+body.modoOscuro #animacionCute{
+    background:rgba(20,15,22,.65);
+}
+
+body.modoOscuro .cuteCaja{
+    background:#302831;
+    color:white;
+}
+
+body.modoOscuro .cuteTexto{
+    color:#f0dce5;
+}
+
+/* =========================
+   CELULAR
+========================= */
+
+@media(max-width:500px){
+
+    .contenedor{
+        padding:12px 9px 28px;
+    }
+
+    .encabezado{
+        padding:20px 13px 17px;
+        border-radius:24px;
+    }
+
+    .titulo{
+        font-size:25px;
+    }
+
+    .ositos{
+        font-size:17px;
+        letter-spacing:5px;
+    }
+
+    .producto{
+        padding:9px 8px;
+    }
+
+    .nombre{
+        font-size:13px;
+    }
+
+    .meta{
+        font-size:10px;
+    }
+
+    .producto input{
+        width:60px;
+        padding:8px 4px;
+    }
+
+    .botones{
+        gap:8px;
+    }
+
+    button{
+        font-size:13px;
+        padding:12px 7px;
+    }
+
+}
+
+</style>
 </head>
 
 <body>
 
-    <h1>🐻 Beary's - Inventario</h1>
+<div class="contenedor">
 
-    <!-- BEBIDAS -->
-    <h2>🥤 Bebidas</h2>
+    <!-- ENCABEZADO -->
 
-    <div id="bebidas"></div>
+    <div class="encabezado">
 
-    <!-- COMIDA -->
-    <h2>🍔 Comida</h2>
+        <div class="ositos">
+            🐻 ☕ 🐻 ☕ 🐻
+        </div>
 
-    <div id="comida"></div>
+        <div class="titulo">
+            🐻 Beary's Inventario
+        </div>
 
-    <!-- BODEGA -->
-    <h2>📦 Bodega</h2>
+        <div class="subtitulo">
+            ☕ Inventario diario · Escribe cuánto tienes físicamente
+        </div>
 
-    <div id="bodega"></div>
+        <div class="fecha" id="fecha"></div>
 
-    <!-- LIMPIEZA -->
-    <h2>🧼 Limpieza</h2>
-
-    <div id="limpieza"></div>
-
-
-    <button onclick="generarLista()">📋 Generar lista</button>
-
-    <button onclick="copiarLista()">📋 Copiar lista</button>
-
-    <div id="resultado"></div>
+    </div>
 
 
-    <script>
+    <!-- CONTROLES -->
 
-        const bebidas = [
-            "Agua Santa María",
-            "Café",
-            "Café descafeinado",
-            "Caramelo",
-            "Chai",
-            "Chai Mango",
-            "Coca",
-            "Coca Light",
-            "Coca Zero",
-            "Concentrado de fresa",
-            "Concentrado de mango",
-            "Concentrado de maracuyá",
-            "Matcha",
-            "Mundet",
-            "Pink lemonade",
-            "Sprite",
-            "Taro",
-            "Té de frutos",
-            "Té de granada",
-            "Té Earl Grey",
-            "Té English",
-            "Té fresa/vainilla",
-            "Té verde",
-            "Té limón",
-            "Té limón/jengibre",
-            "Té mango/fresa",
-            "Té manzanilla",
-            "Té manzanilla/vainilla",
-            "Topochico"
-        ];
+    <div class="controles">
+
+        <div class="busqueda">
+            <input
+                type="text"
+                id="buscar"
+                placeholder="Buscar producto..."
+                oninput="buscarProducto()"
+            >
+        </div>
+
+        <div class="temaControl">
+
+            <span class="temaLuna">🌙</span>
+
+            <label class="switchTema" title="Cambiar tema">
+                <input
+                    type="checkbox"
+                    id="temaSwitch"
+                    onchange="cambiarTema()"
+                >
+                <span class="sliderTema"></span>
+            </label>
+
+        </div>
+
+    </div>
 
 
-        const comida = [
-            "Aguacate",
-            "Cajeta",
-            "Catsup",
-            "Cebolla",
-            "Chapatas",
-            "Chile serrano",
-            "Chocolate Abuelita",
-            "Chocolate de decoración",
-            "Cochinita",
-            "Crema",
-            "Crema batida",
-            "Croissant",
-            "Frijoles",
-            "Galleta Lotus",
-            "Galleta Oreo",
-            "Granola",
-            "Harina de waffles",
-            "Helado de cookie and cream",
-            "Helado de fresa",
-            "Huevo",
-            "Jamón",
-            "Jitomate",
-            "Lechuga",
-            "Limón",
-            "Maple",
-            "Manzana",
-            "Mayonesa",
-            "Miel",
-            "Mostaza",
-            "Nutella",
-            "Papas",
-            "Pollo",
-            "Relleno de chocolate",
-            "Relleno de dulce de leche",
-            "Relleno de frutos rojos",
-            "Relleno de mascarpone",
-            "Salsa inglesa",
-            "Salsa Maggi",
-            "Salsa roja",
-            "Salsa Valentina",
-            "Salsa verde",
-            "Suavicremas",
-            "Tocino en tiras",
-            "Tocino en trozos",
-            "Tortillas",
-            "Turín"
-        ];
+    <!-- =========================
+         BODEGA
+    ========================== -->
+
+    <div class="seccion gris">
+
+        <div class="tituloSeccion">
+            <span>📦</span>
+            Bodega, refri y limpieza
+        </div>
 
 
-        const bodega = [
-            "Bolsas para pollo y cochinita",
-            "Bolsas para trapos",
-            "Comandas",
-            "Cucharas",
-            "Guantes",
-            "Mangas",
-            "Mangas desechables",
-            "Osos grandes",
-            "Osos para bebidas",
-            "Papel encerado",
-            "Popotes",
-            "Rejillas",
-            "Servilletas",
-            "Tapas de espresso",
-            "Tapas domo",
-            "Tapas negras",
-            "Tapas planas",
-            "Tapas para porciones (llevar)",
-            "Tenedores",
-            "Vasos de 10 oz",
-            "Vasos de 12 oz",
-            "Vasos de 16 oz",
-            "Vasos de espresso",
-            "Vasos para porciones (llevar)",
-            "Vasos transparentes",
-            "Velcro"
-        ];
+        <div class="producto">
+            <div>
+                <div class="nombre">Jabón de trastes</div>
+                <div class="meta">Mínimo: 1</div>
+            </div>
+            <input type="number" min="0" step="1" data-name="Jabón de trastes" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div>
+                <div class="nombre">Jabón de manos</div>
+                <div class="meta">Mínimo: 1</div>
+            </div>
+            <input type="number" min="0" step="1" data-name="Jabón de manos" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Guantes para Baño</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Guantes para Baño" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Guantes para horno</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Guantes para horno" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Esponja de carita</div><div class="meta">Mínimo: 3</div></div>
+            <input type="number" min="0" step="1" data-name="Esponja de carita" data-target="3">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Esponja para vasos</div><div class="meta">Mínimo: 3</div></div>
+            <input type="number" min="0" step="1" data-name="Esponja para vasos" data-target="3">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Fibra de acero</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Fibra de acero" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Fibra verde</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Fibra verde" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Piedra pómez</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Piedra pómez" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Fabuloso</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Fabuloso" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Kalan</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Kalan" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Cloro</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Cloro" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Ajax de baño</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Ajax de baño" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Ajax limón</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Ajax limón" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Aromatizante</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Aromatizante" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Windex</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Windex" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Drano</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Drano" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Mechudo</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Mechudo" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Palitos de madera</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Palitos de madera" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Cafiza</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Cafiza" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Tenedores desechables</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Tenedores desechables" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Cucharas desechables</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Cucharas desechables" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Popotes</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Popotes" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Bolsas chicas de basura</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Bolsas chicas de basura" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Bolsas grandes de basura</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Bolsas grandes de basura" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Mangas</div><div class="meta">Mínimo: 7</div></div>
+            <input type="number" min="0" step="1" data-name="Mangas" data-target="7">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Papel de baño</div><div class="meta">Mínimo: 8</div></div>
+            <input type="number" min="0" step="1" data-name="Papel de baño" data-target="8">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Café</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Café" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Vasos de 16 oz</div><div class="meta">Mínimo: 4</div></div>
+            <input type="number" min="0" step="1" data-name="Vasos de 16 oz" data-target="4">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Vasos de 12 oz</div><div class="meta">Mínimo: 5</div></div>
+            <input type="number" min="0" step="1" data-name="Vasos de 12 oz" data-target="5">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Vasos transparentes</div><div class="meta">Mínimo: 5</div></div>
+            <input type="number" min="0" step="1" data-name="Vasos transparentes" data-target="5">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Vasos de 10 oz</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Vasos de 10 oz" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Vasos de espresso</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Vasos de espresso" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Azúcar</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Azúcar" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Splenda</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Splenda" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Stevia</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Stevia" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Guantes</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Guantes" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Servilletas</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Servilletas" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Servitoallas</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Servitoallas" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Sanitas</div><div class="meta">Mínimo: 3</div></div>
+            <input type="number" min="0" step="1" data-name="Sanitas" data-target="3">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Azúcar mascabado</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Azúcar mascabado" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Charolas chicas</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Charolas chicas" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Charolas grandes</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Charolas grandes" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Mangas desechables</div><div class="meta">Mínimo: 4</div></div>
+            <input type="number" min="0" step="1" data-name="Mangas desechables" data-target="4">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Bolsas para pollo y cochinita</div><div class="meta">Mínimo: 3</div></div>
+            <input type="number" min="0" step="1" data-name="Bolsas para pollo y cochinita" data-target="3">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Rejillas</div><div class="meta">Mínimo: 30</div></div>
+            <input type="number" min="0" step="1" data-name="Rejillas" data-target="30">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Totopos</div><div class="meta">Mínimo: 16</div></div>
+            <input type="number" min="0" step="1" data-name="Totopos" data-target="16">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Frijoles</div><div class="meta">Mínimo: 6</div></div>
+            <input type="number" min="0" step="1" data-name="Frijoles" data-target="6">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Té de frutos</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Té de frutos" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Té fresa/vainilla</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Té fresa/vainilla" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Té verde</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Té verde" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Té Earl Grey</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Té Earl Grey" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Té English</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Té English" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Té mango/fresa</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Té mango/fresa" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Té limón</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Té limón" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Té limón/jengibre</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Té limón/jengibre" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Té manzanilla</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Té manzanilla" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Té manzanilla/vainilla</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Té manzanilla/vainilla" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Té de granada</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Té de granada" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Helado de cookie and cream</div><div class="meta">Mínimo: 10</div></div>
+            <input type="number" min="0" step="1" data-name="Helado de cookie and cream" data-target="10">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Helado de vainilla</div><div class="meta">Mínimo: 4</div></div>
+            <input type="number" min="0" step="1" data-name="Helado de vainilla" data-target="4">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Helado de chocolate</div><div class="meta">Mínimo: 4</div></div>
+            <input type="number" min="0" step="1" data-name="Helado de chocolate" data-target="4">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Helado de fresa</div><div class="meta">Mínimo: 10</div></div>
+            <input type="number" min="0" step="1" data-name="Helado de fresa" data-target="10">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Harina de waffles</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Harina de waffles" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Jamón</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Jamón" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Tocino en trozos</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Tocino en trozos" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Tocino en tiras</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" step="1" data-name="Tocino en tiras" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Jitomate</div><div class="meta">Mínimo: 20</div></div>
+            <input type="number" min="0" step="1" data-name="Jitomate" data-target="20">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Cebolla</div><div class="meta">Mínimo: 4</div></div>
+            <input type="number" min="0" step="1" data-name="Cebolla" data-target="4">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Lechuga</div><div class="meta">Mínimo: 3</div></div>
+            <input type="number" min="0" step="1" data-name="Lechuga" data-target="3">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Limón</div><div class="meta">Mínimo: 10</div></div>
+            <input type="number" min="0" step="1" data-name="Limón" data-target="10">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Chile serrano</div><div class="meta">Mínimo: 0.25</div></div>
+            <input type="number" min="0" step="0.01" data-name="Chile serrano" data-target="0.25">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Manzana</div><div class="meta">Mínimo: 4</div></div>
+            <input type="number" min="0" step="1" data-name="Manzana" data-target="4">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Relleno de dulce de leche</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Relleno de dulce de leche" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Relleno de chocolate</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Relleno de chocolate" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Relleno de mascarpone</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Relleno de mascarpone" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Relleno de frutos rojos</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Relleno de frutos rojos" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Salsa verde</div><div class="meta">Mínimo: 10</div></div>
+            <input type="number" min="0" step="1" data-name="Salsa verde" data-target="10">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Salsa roja</div><div class="meta">Mínimo: 10</div></div>
+            <input type="number" min="0" step="1" data-name="Salsa roja" data-target="10">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Cochinita</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Cochinita" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Pollo</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Pollo" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Crema</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Crema" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Crema batida</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Crema batida" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Papas</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" step="1" data-name="Papas" data-target="2">
+        </div>
+
+    </div>
 
 
-        const limpieza = [
-            "Ajax de baño",
-            "Ajax limón",
-            "Cafiza",
-            "Cafiza molinos",
-            "Cloro",
-            "Drano",
-            "Esponja de carita",
-            "Esponja para vasos",
-            "Fabuloso",
-            "Fibra de acero",
-            "Fibra verde",
-            "Jabón de manos",
-            "Jabón de trastes",
-            "Limpiador de horno",
-            "Mechudo",
-            "Papel de baño",
-            "Piedra pómez",
-            "Protector de horno",
-            "Servitoallas",
-            "Trapos limpios",
-            "Windex"
-        ];
+    <!-- =========================
+         BEBIDAS
+    ========================== -->
+
+    <div class="seccion morado">
+
+        <div class="tituloSeccion">
+            <span>☕</span>
+            Bebidas
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Coca</div><div class="meta">Mínimo: 7</div></div>
+            <input type="number" min="0" data-name="Coca" data-target="7">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Coca zero</div><div class="meta">Mínimo: 5</div></div>
+            <input type="number" min="0" data-name="Coca zero" data-target="5">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Coca light</div><div class="meta">Mínimo: 5</div></div>
+            <input type="number" min="0" data-name="Coca light" data-target="5">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Sprite</div><div class="meta">Mínimo: 4</div></div>
+            <input type="number" min="0" data-name="Sprite" data-target="4">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Mundet</div><div class="meta">Mínimo: 4</div></div>
+            <input type="number" min="0" data-name="Mundet" data-target="4">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Flanes</div><div class="meta">Mínimo: 5</div></div>
+            <input type="number" min="0" data-name="Flanes" data-target="5">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Bolsas de pan</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Bolsas de pan" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Bolsas grandes</div><div class="meta">Mínimo: 40</div></div>
+            <input type="number" min="0" data-name="Bolsas grandes" data-target="40">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Agua Santa María</div><div class="meta">Mínimo: 7</div></div>
+            <input type="number" min="0" data-name="Agua Santa María" data-target="7">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Topochico</div><div class="meta">Mínimo: 6</div></div>
+            <input type="number" min="0" data-name="Topochico" data-target="6">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Vasos para porciones (llevar)</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Vasos para porciones (llevar)" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Tapas para porciones (llevar)</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Tapas para porciones (llevar)" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Papel encerado</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Papel encerado" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Turín</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Turín" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Chai</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Chai" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Chai Mango</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Chai Mango" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Taro</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Taro" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Matcha</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Matcha" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Galleta Oreo</div><div class="meta">Mínimo: 3</div></div>
+            <input type="number" min="0" data-name="Galleta Oreo" data-target="3">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Suavicremas</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" data-name="Suavicremas" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Galleta Lotus</div><div class="meta">Mínimo: 4</div></div>
+            <input type="number" min="0" data-name="Galleta Lotus" data-target="4">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Chocolate Abuelita</div><div class="meta">Mínimo: 3</div></div>
+            <input type="number" min="0" data-name="Chocolate Abuelita" data-target="3">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Chocolate de decoración</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Chocolate de decoración" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Café descafeinado</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Café descafeinado" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Cajeta</div><div class="meta">Mínimo: 4</div></div>
+            <input type="number" min="0" data-name="Cajeta" data-target="4">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Crema Lotus</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Crema Lotus" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Nutella</div><div class="meta">Mínimo: 4</div></div>
+            <input type="number" min="0" data-name="Nutella" data-target="4">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Tarjetas de cortesía</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Tarjetas de cortesía" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Etiquetas</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Etiquetas" data-target="1">
+        </div>
+
+    </div>
 
 
-        function mostrarProductos(lista, lugar) {
+    <!-- =========================
+         COMIDA
+    ========================== -->
 
-            const contenedor = document.getElementById(lugar);
+    <div class="seccion comida">
 
-            lista.forEach(function(producto) {
+        <div class="tituloSeccion">
+            <span>🍔</span>
+            Comida
+        </div>
 
-                contenedor.innerHTML += `
-                    <div class="producto">
-                        <span>${producto}</span>
+        <div class="producto">
+            <div><div class="nombre">Mayonesa</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Mayonesa" data-target="1">
+        </div>
 
-                        <input 
-                            type="number" 
-                            min="0"
-                            placeholder="Cantidad"
-                            data-producto="${producto}"
-                        >
-                    </div>
-                `;
+        <div class="producto">
+            <div><div class="nombre">Mostaza</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Mostaza" data-target="1">
+        </div>
 
-            });
+        <div class="producto">
+            <div><div class="nombre">Aguacate</div><div class="meta">Mínimo: 18</div></div>
+            <input type="number" min="0" data-name="Aguacate" data-target="18">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Salsa Maggi</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Salsa Maggi" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Salsa inglesa</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Salsa inglesa" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Salsa matcha</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Salsa matcha" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Salsa Valentina</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Salsa Valentina" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Catsup</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Catsup" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Granola</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Granola" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Miel</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Miel" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Maple</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Maple" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Sal</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Sal" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Galletas de cortesia</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Galletas de cortesia" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Galletas de Limón</div><div class="meta">Mínimo: 5</div></div>
+            <input type="number" min="0" data-name="Galletas de Limón" data-target="5">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Galletas de Pistache</div><div class="meta">Mínimo: 5</div></div>
+            <input type="number" min="0" data-name="Galletas de Pistache" data-target="5">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Huevo</div><div class="meta">Mínimo: 3</div></div>
+            <input type="number" min="0" data-name="Huevo" data-target="3">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Comandas</div><div class="meta">Mínimo: 5</div></div>
+            <input type="number" min="0" data-name="Comandas" data-target="5">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Tartas</div><div class="meta">Mínimo: 30</div></div>
+            <input type="number" min="0" data-name="Tartas" data-target="30">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Leche deslactosada</div><div class="meta">Mínimo: 24</div></div>
+            <input type="number" min="0" data-name="Leche deslactosada" data-target="24">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Leche entera</div><div class="meta">Mínimo: 15</div></div>
+            <input type="number" min="0" data-name="Leche entera" data-target="15">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Leche light</div><div class="meta">Mínimo: 6</div></div>
+            <input type="number" min="0" data-name="Leche light" data-target="6">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Leche deslactosada light</div><div class="meta">Mínimo: 6</div></div>
+            <input type="number" min="0" data-name="Leche deslactosada light" data-target="6">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Leche de almendra</div><div class="meta">Mínimo: 4</div></div>
+            <input type="number" min="0" data-name="Leche de almendra" data-target="4">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Leche de coco</div><div class="meta">Mínimo: 3</div></div>
+            <input type="number" min="0" data-name="Leche de coco" data-target="3">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Leche de avena</div><div class="meta">Mínimo: 4</div></div>
+            <input type="number" min="0" data-name="Leche de avena" data-target="4">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Leche de soya</div><div class="meta">Mínimo: 4</div></div>
+            <input type="number" min="0" data-name="Leche de soya" data-target="4">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Concentrado de fresa</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" data-name="Concentrado de fresa" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Concentrado de maracuya</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" data-name="Concentrado de maracuya" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Concentrado de mango</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" data-name="Concentrado de mango" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Pink lemonade</div><div class="meta">Mínimo: 2</div></div>
+            <input type="number" min="0" data-name="Pink lemonade" data-target="2">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Caramelo</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Caramelo" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Tortillas</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Tortillas" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Chapatas</div><div class="meta">Mínimo: 20</div></div>
+            <input type="number" min="0" data-name="Chapatas" data-target="20">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Croissant</div><div class="meta">Mínimo: 15</div></div>
+            <input type="number" min="0" data-name="Croissant" data-target="15">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Trapos limpios</div><div class="meta">Mínimo: 50</div></div>
+            <input type="number" min="0" data-name="Trapos limpios" data-target="50">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Bolsa para trapos</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Bolsa para trapos" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Velcro</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Velcro" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Osos para bebidas</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Osos para bebidas" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Osos grandes</div><div class="meta">Mínimo: 10</div></div>
+            <input type="number" min="0" data-name="Osos grandes" data-target="10">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Limpiador de horno</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Limpiador de horno" data-target="1">
+        </div>
+
+        <div class="producto">
+            <div><div class="nombre">Protector de horno</div><div class="meta">Mínimo: 1</div></div>
+            <input type="number" min="0" data-name="Protector de horno" data-target="1">
+        </div>
+
+    </div>
+
+
+    <div id="sinResultados">
+        🐻💕 No encontré ese producto
+    </div>
+
+
+    <!-- BOTONES -->
+
+    <div class="botones">
+
+        <button class="btnGenerar" onclick="generarYCopiar()">
+            🛒 Generar lista
+        </button>
+
+        <button class="btnNueva" onclick="nuevaLista()">
+            ✨ Nueva lista
+        </button>
+
+    </div>
+
+
+    <!-- RESULTADO -->
+
+    <div class="resultado" id="resultado" style="display:none;">
+
+        <h3>🛒 Lista para surtir</h3>
+
+        <div id="listaResultado"></div>
+
+    </div>
+
+</div>
+
+
+<!-- ANIMACIÓN -->
+
+<div id="animacionCute">
+
+    <div class="cuteCaja">
+
+        <div class="cuteOso">
+            🐻
+        </div>
+
+        <div class="cuteTexto">
+            ¡Listo, bro! 💕
+        </div>
+
+        <div class="corazones">
+            ♡ ✨ ♡
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   FECHA
+========================= */
+
+function ponerFecha(){
+
+    const fecha = new Date();
+
+    const opciones = {
+        weekday:"long",
+        day:"numeric",
+        month:"long",
+        year:"numeric"
+    };
+
+    document.getElementById("fecha").textContent =
+        "📅 " + fecha.toLocaleDateString("es-MX", opciones);
+
+}
+
+
+/* =========================
+   GUARDAR DATOS
+========================= */
+
+const inputs = document.querySelectorAll(".producto input");
+
+inputs.forEach(input => {
+
+    input.addEventListener("input", function(){
+
+        localStorage.setItem(
+            "bearys_" + this.dataset.name,
+            this.value
+        );
+
+    });
+
+});
+
+
+/* =========================
+   CARGAR DATOS
+========================= */
+
+function cargarDatos(){
+
+    inputs.forEach(input => {
+
+        const guardado =
+            localStorage.getItem(
+                "bearys_" + input.dataset.name
+            );
+
+        if(guardado !== null){
+            input.value = guardado;
+        }
+
+    });
+
+}
+
+
+/* =========================
+   GENERAR LISTA
+========================= */
+
+function generarYCopiar(){
+
+    let lista = "URGENTES\n\n";
+
+    let hayUrgentes = false;
+
+    inputs.forEach(input => {
+
+        const nombre = input.dataset.name;
+
+        const objetivo =
+            parseFloat(input.dataset.target);
+
+        const actual =
+            parseFloat(input.value);
+
+        if(
+            input.value !== "" &&
+            !isNaN(actual) &&
+            actual < objetivo
+        ){
+
+            const falta = objetivo - actual;
+
+            lista +=
+                "• " +
+                nombre +
+                ": " +
+                falta +
+                "\n";
+
+            hayUrgentes = true;
 
         }
 
-
-        mostrarProductos(bebidas, "bebidas");
-        mostrarProductos(comida, "comida");
-        mostrarProductos(bodega, "bodega");
-        mostrarProductos(limpieza, "limpieza");
+    });
 
 
-        function generarLista() {
+    if(!hayUrgentes){
 
-            let lista = "";
+        lista +=
+            "✨ No hace falta surtir nada.\n" +
+            "🐻 ¡Todo está completo!";
 
-            const productos = document.querySelectorAll("input");
+    }
 
-            productos.forEach(function(input) {
 
-                if (input.value !== "") {
+    document.getElementById("listaResultado").textContent =
+        lista;
 
-                    lista += input.dataset.producto + " " + input.value + "\n";
+    document.getElementById("resultado").style.display =
+        "block";
 
-                }
 
-            });
+    navigator.clipboard.writeText(lista)
+        .catch(() => {});
 
-            document.getElementById("resultado").innerText = lista;
+
+    mostrarAnimacion("¡Lista copiada! 💕");
+
+}
+
+
+/* =========================
+   NUEVA LISTA
+========================= */
+
+function nuevaLista(){
+
+    const confirmar = confirm(
+        "¿Seguro que quieres limpiar las cantidades para hacer una nueva lista?"
+    );
+
+    if(!confirmar) return;
+
+
+    inputs.forEach(input => {
+
+        input.value = "";
+
+        localStorage.removeItem(
+            "bearys_" + input.dataset.name
+        );
+
+    });
+
+
+    document.getElementById("resultado").style.display =
+        "none";
+
+    mostrarAnimacion("¡Nueva lista! ✨");
+
+}
+
+
+/* =========================
+   BUSCADOR
+========================= */
+
+function buscarProducto(){
+
+    const texto =
+        document.getElementById("buscar")
+        .value
+        .toLowerCase()
+        .trim();
+
+    const secciones =
+        document.querySelectorAll(".seccion");
+
+    let encontrados = 0;
+
+
+    secciones.forEach(seccion => {
+
+        const productos =
+            seccion.querySelectorAll(".producto");
+
+        let encontradosSeccion = 0;
+
+
+        productos.forEach(producto => {
+
+            const nombre =
+                producto
+                .querySelector(".nombre")
+                .textContent
+                .toLowerCase();
+
+            if(nombre.includes(texto)){
+
+                producto.style.display = "flex";
+
+                encontradosSeccion++;
+
+                encontrados++;
+
+            }else{
+
+                producto.style.display = "none";
+
+            }
+
+        });
+
+
+        if(encontradosSeccion === 0){
+
+            seccion.style.display = "none";
+
+        }else{
+
+            seccion.style.display = "block";
 
         }
 
+    });
 
-        function copiarLista() {
 
-            const texto = document.getElementById("resultado").innerText;
+    const sinResultados =
+        document.getElementById("sinResultados");
 
-            navigator.clipboard.writeText(texto);
 
-            alert("¡Lista copiada! 🐻");
+    if(texto !== "" && encontrados === 0){
 
-        }
+        sinResultados.style.display = "block";
 
-    </script>
+    }else{
+
+        sinResultados.style.display = "none";
+
+    }
+
+}
+
+
+/* =========================
+   MODO OSCURO
+========================= */
+
+function cambiarTema(){
+
+    const activo =
+        document.getElementById("temaSwitch").checked;
+
+    document.body.classList.toggle(
+        "modoOscuro",
+        activo
+    );
+
+    localStorage.setItem(
+        "bearys_modo",
+        activo
+    );
+
+}
+
+
+/* =========================
+   CARGAR TEMA
+========================= */
+
+function cargarTema(){
+
+    const modo =
+        localStorage.getItem("bearys_modo");
+
+    if(modo === "true"){
+
+        document.body.classList.add("modoOscuro");
+
+        document.getElementById("temaSwitch").checked =
+            true;
+
+    }
+
+}
+
+
+/* =========================
+   ANIMACIÓN
+========================= */
+
+function mostrarAnimacion(texto){
+
+    const overlay =
+        document.getElementById("animacionCute");
+
+    const mensaje =
+        document.querySelector(".cuteTexto");
+
+    mensaje.textContent = texto;
+
+    overlay.style.display = "flex";
+
+
+    setTimeout(() => {
+
+        overlay.style.display = "none";
+
+    }, 1100);
+
+}
+
+
+/* =========================
+   INICIAR
+========================= */
+
+ponerFecha();
+
+cargarDatos();
+
+cargarTema();
+
+</script>
 
 </body>
 </html>
