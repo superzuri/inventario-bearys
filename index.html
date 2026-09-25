@@ -1,3141 +1,3273 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Beary's Inventario 🐻</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#ff76a9">
+<title>Beary's Coffee Shop</title>
 
 <style>
+/* BEARY'S COFFEE SHOP — UI BASE */
 
-*{
-    box-sizing:border-box;
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+button,input,textarea{font:inherit}
+button{border:0}
+button.tap-feedback{animation:tapPulse .22s ease}
+
+@keyframes tapPulse{
+  50%{transform:scale(.96)}
+}
+
+:root{
+  --bg:#fff4f8;
+  --bg2:#ffe6ef;
+  --surface:#fffafb;
+  --surface2:rgba(255,250,252,.94);
+  --text:#452c38;
+  --muted:#987684;
+  --pink:#ff79ad;
+  --pink2:#ed4f8a;
+  --pinksoft:#ffdce9;
+  --border:#f4cbdc;
+  --shadow:0 14px 35px rgba(187,83,125,.13);
+  --pink-glow:rgba(255,121,173,.20);
+  --nav:rgba(255,255,255,.94);
+  --success:#51c88a;
+  --danger:#ef6289;
+}
+
+body.dark{
+  --bg:#171216;
+  --bg2:#21171d;
+  --surface:#281d24;
+  --surface2:rgba(40,29,36,.94);
+  --text:#fff0f6;
+  --muted:#bda5af;
+  --pink:#ff82b2;
+  --pink2:#ff6aa3;
+  --pinksoft:#422733;
+  --border:#48323d;
+  --shadow:0 16px 38px rgba(0,0,0,.28);
+  --nav:rgba(30,22,27,.95);
+  --success:#67d69b;
+  --danger:#ff779d;
 }
 
 body{
-    margin:0;
-    font-family:Arial, sans-serif;
-    background:#ffdce8;
-    color:#4a3038;
-    transition:0.3s;
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  transition:.3s;
+  padding-bottom:calc(92px + env(safe-area-inset-bottom))
+}
+
+.app{
+  width:min(100%,620px);
+  margin:auto;
+  padding:0 15px
+}
+
+.topbar{
+  height:78px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;
+  top:0;
+  z-index:100;
+  margin:0 -15px;
+  padding:0 15px;
+  background:color-mix(in srgb,var(--bg) 84%,transparent);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border)
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px
+}
+
+.brand-logo{
+  width:47px;
+  height:47px;
+  display:grid;
+  place-items:center;
+  border-radius:17px;
+  background:linear-gradient(145deg,var(--surface),var(--pinksoft));
+  box-shadow:0 12px 30px rgba(255,105,160,.2);
+  font-size:26px
+}
+
+.brand-name{
+  display:block;
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:-.7px;
+  color:var(--text)
+}
+
+.brand-subtitle{
+  display:block;
+  margin-top:4px;
+  font-size:9px;
+  letter-spacing:1.1px;
+  color:var(--pink2);
+  font-weight:850
 }
 
-/* =========================
-   ENCABEZADO
-========================= */
+.theme-toggle{
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:var(--surface);
+  color:var(--text);
+  box-shadow:var(--shadow);
+  cursor:pointer;
+  font-size:18px
+}
+
+.page{
+  display:none;
+  padding-top:20px;
+  animation:pageIn .3s ease
+}
+
+.page.active{
+  display:block
+}
+
+@keyframes pageIn{
+  from{opacity:0;transform:translateY(9px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* HOME */
+
+.hero{
+  min-height:295px;
+  position:relative;
+  overflow:hidden;
+  padding:27px 23px;
+  border-radius:32px;
+  color:white;
+  background:linear-gradient(135deg,#ff70a7,#ff91ba 55%,#ffb9d2);
+  box-shadow:0 24px 55px rgba(255,94,150,.23)
+}
+
+.hero:before{
+  content:"";
+  position:absolute;
+  width:300px;
+  height:300px;
+  border-radius:50%;
+  right:-145px;
+  top:-150px;
+  background:rgba(255,255,255,.1)
+}
+
+.hero:after{
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  left:-105px;
+  bottom:-125px;
+  background:rgba(255,255,255,.07)
+}
+
+.hero-star{
+  position:absolute;
+  opacity:.8;
+  animation:twinkle 2.6s infinite
+}
+
+.hero-star:nth-child(1){
+  top:17%;
+  right:39%
+}
+
+.hero-star:nth-child(2){
+  top:49%;
+  right:13%;
+  animation-delay:.7s
+}
+
+.hero-star:nth-child(3){
+  top:10%;
+  left:51%;
+  animation-delay:1.2s
+}
+
+@keyframes twinkle{
+  50%{
+    transform:scale(1.5);
+    opacity:1
+  }
+}
+
+.hero-content{
+  position:relative;
+  z-index:3
+}
+
+.hero-label{
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:1.8px
+}
+
+.hero-title{
+  margin-top:8px;
+  font-size:33px;
+  line-height:1.02;
+  letter-spacing:-1.4px
+}
+
+.hero-description{
+  margin-top:12px;
+  max-width:290px;
+  font-size:11px;
+  line-height:1.6;
+  opacity:.92
+}
+
+.hero-bear{
+  position:absolute;
+  right:17px;
+  top:73px;
+  z-index:2;
+  font-size:88px;
+  filter:drop-shadow(0 12px 8px rgba(50,10,30,.14));
+  animation:float 3.4s ease-in-out infinite
+}
+
+@keyframes float{
+  50%{
+    transform:translateY(-8px) rotate(2deg)
+  }
+}
+
+.hero-button{
+  position:relative;
+  z-index:5;
+  margin-top:20px;
+  padding:11px 16px;
+  border-radius:14px;
+  color:white;
+  background:rgba(255,255,255,.17);
+  border:1px solid rgba(255,255,255,.35);
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer
+}
+
+.section-header{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  margin:26px 3px 12px
+}
 
-.encabezado{
-    background:#fff7fa;
-    padding:20px 15px 18px;
-    text-align:center;
-    border-bottom:3px solid #f3b7ca;
-    box-shadow:0 3px 10px rgba(0,0,0,0.08);
+.section-header h2{
+  font-size:17px
 }
 
-.decoracion{
-    font-size:25px;
-    letter-spacing:8px;
+.section-header span{
+  color:var(--muted);
+  font-size:9px;
+  font-weight:650
 }
 
-h1{
-    margin:8px 0 4px;
-    font-size:30px;
-    color:#8f5268;
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:11px
 }
 
-.subtitulo{
-    font-size:14px;
-    color:#876d75;
+.menu-card{
+  min-height:135px;
+  position:relative;
+  overflow:hidden;
+  text-align:left;
+  padding:16px;
+  border-radius:23px;
+  border:1px solid var(--border);
+  background:var(--surface2);
+  box-shadow:var(--shadow);
+  color:var(--text);
+  cursor:pointer
 }
 
-.fecha{
-    margin-top:8px;
-    font-size:13px;
-    color:#a15c75;
-    text-transform:capitalize;
+.menu-card:before{
+  content:"";
+  position:absolute;
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  right:-38px;
+  bottom:-38px;
+  background:var(--bg2)
 }
 
-/* =========================
-   BOTONES
-========================= */
+.menu-card:active{
+  transform:scale(.965)
+}
+
+.menu-icon{
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  border-radius:16px;
+  background:var(--bg2);
+  font-size:23px;
+  margin-bottom:13px
+}
 
-.botones{
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    flex-wrap:wrap;
-    margin:15px auto;
-    max-width:700px;
+.menu-card-title,
+.menu-card-description{
+  position:relative;
+  z-index:2;
+  display:block
 }
 
-button{
-    border:none;
-    border-radius:14px;
-    padding:12px 18px;
-    font-size:14px;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.2s;
+.menu-card-title{
+  font-size:14px;
+  font-weight:850
 }
 
-button:active{
-    transform:scale(0.95);
+.menu-card-description{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.35
 }
 
-.botonGenerar{
-    background:#9c6278;
-    color:white;
-    box-shadow:0 4px 10px rgba(0,0,0,0.15);
+.phrase-card{
+  position:relative;
+  overflow:hidden;
+  padding:20px;
+  border-radius:24px;
+  background:linear-gradient(135deg,var(--surface),var(--bg2));
+  border:1px solid var(--border);
+  box-shadow:var(--shadow)
 }
 
-.botonNueva{
-    background:#fff;
-    color:#a04f6d;
-    border:2px solid #e5a8bd;
+.phrase-top,
+.phrase-bottom{
+  display:flex;
+  align-items:center;
+  justify-content:space-between
 }
 
-.botonTema{
-    background:#4c3b43;
-    color:white;
+.phrase-label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:11px;
+  font-weight:850
 }
 
-/* =========================
-   BUSCADOR
-========================= */
+.phrase-label-icon{
+  width:32px;
+  height:32px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:var(--pinksoft)
+}
+
+.phrase-number{
+  font-size:9px;
+  color:var(--muted);
+  font-weight:700
+}
 
-.buscador{
-    display:block;
-    width:calc(100% - 30px);
-    max-width:700px;
-    margin:10px auto 15px;
+.phrase-text{
+  margin-top:14px;
+  font-size:14px;
+  line-height:1.55;
+  font-weight:700;
+  max-width:90%;
+  transition:.15s
+}
 
-    padding:14px 18px;
+.phrase-bottom{
+  margin-top:17px
+}
 
-    border:2px solid #efb4c8;
-    border-radius:18px;
+.phrase-bear{
+  font-size:24px
+}
 
-    background:white;
-    color:#4a3038;
+.phrase-button{
+  padding:8px 12px;
+  border-radius:12px;
+  background:var(--pinksoft);
+  color:var(--pink2);
+  font-size:9px;
+  font-weight:850;
+  cursor:pointer
+}
 
-    font-size:15px;
-    outline:none;
+.status-card{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px;
+  border-radius:22px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  box-shadow:var(--shadow)
+}
 
-    box-shadow:0 3px 8px rgba(0,0,0,0.08);
+.status-content{
+  display:flex;
+  align-items:center;
+  gap:11px
 }
 
-.buscador:focus{
-    border-color:#c97f9a;
+.status-icon{
+  width:45px;
+  height:45px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:var(--bg2);
+  font-size:20px
 }
 
-/* =========================
-   SECCIONES
-========================= */
+.status-title{
+  display:block;
+  font-size:12px;
+  font-weight:850
+}
 
-.contenedor{
-    width:95%;
-    max-width:750px;
-    margin:auto;
+.status-description{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:10px
 }
 
-.seccion{
-    background:#fff7fa;
-    border-radius:22px;
-    margin:18px 0;
-    padding:16px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.10);
-    transition:0.3s;
+.status-dot{
+  width:11px;
+  height:11px;
+  border-radius:50%;
+  background:var(--success);
+  box-shadow:0 0 0 5px color-mix(in srgb,var(--success) 20%,transparent)
 }
+
+/* INNER + INVENTORY */
 
-.tituloSeccion{
-    padding:13px;
-    border-radius:15px;
-    font-size:20px;
-    font-weight:bold;
-    margin-bottom:12px;
+.inner-header{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  margin-bottom:18px
 }
 
-/* COLORES DE SECCIONES */
+.back-button{
+  width:43px;
+  height:43px;
+  display:grid;
+  place-items:center;
+  border-radius:14px;
+  background:var(--surface);
+  color:var(--text);
+  box-shadow:var(--shadow);
+  font-size:18px;
+  cursor:pointer
+}
 
-.gris .tituloSeccion{
-    background:#e8e3e5;
-    color:#5d5558;
+.inner-title h1{
+  font-size:24px;
+  letter-spacing:-.8px
 }
 
-.morado .tituloSeccion{
-    background:#eadcf2;
-    color:#80568f;
+.inner-title p{
+  margin-top:3px;
+  color:var(--muted);
+  font-size:10px
 }
 
-.comida .tituloSeccion{
-    background:#ffe2c7;
-    color:#a26032;
+.inventory-hero{
+  padding:17px;
+  border-radius:24px;
+  background:linear-gradient(135deg,var(--surface),var(--bg2));
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  margin-bottom:14px
 }
 
-/* =========================
-   PRODUCTOS
-========================= */
+.inventory-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px
+}
 
-.producto{
-    background:white;
-    border-radius:16px;
-    margin:9px 0;
-    padding:12px;
+.inventory-top strong{
+  font-size:13px
+}
 
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
+.inventory-top span{
+  font-size:10px;
+  color:var(--muted)
+}
 
-    border:2px solid transparent;
+.progress-track{
+  height:8px;
+  background:var(--pinksoft);
+  border-radius:99px;
+  margin-top:12px;
+  overflow:hidden
+}
 
-    transition:
-        transform 0.2s,
-        box-shadow 0.2s,
-        border 0.2s;
+.progress-fill{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,var(--pink),#ffb1cd);
+  border-radius:99px;
+  transition:.35s
 }
 
-.producto:hover{
-    transform:translateY(-2px);
-    box-shadow:0 4px 10px rgba(0,0,0,0.08);
+.inventory-stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+  margin-top:12px
 }
 
-.nombre{
-    font-weight:bold;
-    font-size:15px;
-    flex:1;
+.inv-stat{
+  padding:10px 7px;
+  border-radius:14px;
+  background:var(--bg2);
+  text-align:center
 }
 
-.meta{
-    font-size:12px;
-    color:#927b83;
-    margin-top:3px;
+.inv-stat b{
+  display:block;
+  font-size:15px
 }
 
-.entrada{
-    display:flex;
-    align-items:center;
-    gap:5px;
+.inv-stat small{
+  font-size:8px;
+  color:var(--muted)
 }
 
-.entrada span{
-    font-size:12px;
-    color:#866d76;
+.inventory-search{
+  width:100%;
+  padding:14px 16px;
+  border-radius:17px;
+  border:1px solid var(--border);
+  outline:0;
+  background:var(--surface);
+  color:var(--text);
+  box-shadow:var(--shadow);
+  margin-bottom:12px
 }
 
-input[type="number"]{
-    width:75px;
-    padding:10px 7px;
+.inventory-search:focus{
+  border-color:var(--pink)
+}
 
-    border-radius:12px;
-    border:2px solid #e8bdcc;
+.inventory-area{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:13px;
+  margin-bottom:14px;
+  box-shadow:var(--shadow)
+}
 
-    text-align:center;
-    font-size:15px;
+.inventory-area-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:4px 3px 11px;
+  border-bottom:2px dashed var(--border);
+  margin-bottom:3px
+}
 
-    outline:none;
-    background:#fff;
-    color:#4a3038;
+.inventory-area-title h2{
+  font-size:15px
 }
 
-input[type="number"]:focus{
-    border-color:#b96785;
+.inventory-area-title span{
+  font-size:9px;
+  color:var(--muted)
 }
 
-/* =========================
-   SEMÁFORO
-========================= */
+.product-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:9px 4px;
+  border-bottom:1px solid var(--border);
+  min-height:58px
+}
 
-.producto.verde{
-    border-color:#a8d8b0;
-    background:#f5fff6;
+.product-row:last-child{
+  border-bottom:0
 }
 
-.producto.amarillo{
-    border-color:#f1d37d;
-    background:#fffdf2;
+.product-info{
+  min-width:0;
+  flex:1
 }
 
-.producto.rojo{
-    border-color:#e8a0a0;
-    background:#fff5f5;
+.product-name{
+  font-size:12px;
+  font-weight:650;
+  line-height:1.25
 }
 
-.producto.sinCantidad{
-    border-color:transparent;
+.product-meta{
+  font-size:9px;
+  color:var(--muted);
+  margin-top:3px
 }
 
-.semaforo{
-    width:14px;
-    height:14px;
+.product-controls{
+  display:flex;
+  align-items:center;
+  gap:6px
+}
 
-    border-radius:50%;
+.traffic{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#aaa
+}
 
-    flex-shrink:0;
+.traffic.green{
+  background:var(--success);
+  box-shadow:0 0 7px rgba(81,200,138,.55)
+}
 
-    background:#d3d3d3;
+.traffic.yellow{
+  background:#e7bc51;
+  box-shadow:0 0 7px rgba(231,188,81,.55)
+}
 
-    box-shadow:
-        0 0 0 3px rgba(0,0,0,0.03);
+.traffic.red{
+  background:var(--danger);
+  box-shadow:0 0 7px rgba(239,98,137,.55)
+}
 
-    transition:0.3s;
+.quantity{
+  width:64px;
+  padding:8px 4px;
+  border:2px solid var(--border);
+  border-radius:12px;
+  outline:0;
+  text-align:center;
+  background:var(--surface);
+  color:var(--text);
+  font-size:14px
 }
 
-.semaforo.verde{
-    background:#65bd72;
-    box-shadow:0 0 8px rgba(101,189,114,0.7);
+.quantity:focus{
+  border-color:var(--pink)
 }
 
-.semaforo.amarillo{
-    background:#e8c84c;
-    box-shadow:0 0 8px rgba(232,200,76,0.7);
+.inventory-actions{
+  display:flex;
+  gap:9px;
+  margin:15px 0
 }
 
-.semaforo.rojo{
-    background:#df6868;
-    box-shadow:0 0 8px rgba(223,104,104,0.7);
+.inv-btn{
+  flex:1;
+  padding:13px 10px;
+  border-radius:16px;
+  font-size:11px;
+  font-weight:850;
+  cursor:pointer;
+  box-shadow:var(--shadow)
 }
 
-/* TEXTO FALTANTE */
+.inv-btn.primary{
+  background:linear-gradient(135deg,#75483d,#5e3931);
+  color:#fff
+}
 
-.faltante{
-    font-size:11px;
-    margin-top:4px;
-    font-weight:bold;
+.inv-btn.secondary{
+  background:var(--pinksoft);
+  color:var(--pink2)
 }
 
-.faltante.verde{
-    color:#4d9b58;
+.result-box{
+  width:100%;
+  min-height:130px;
+  resize:vertical;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:13px;
+  background:var(--surface);
+  color:var(--text);
+  outline:0;
+  font-family:ui-monospace,monospace;
+  font-size:12px;
+  line-height:1.5
 }
 
-.faltante.amarillo{
-    color:#ad8a19;
+.inventory-message{
+  text-align:center;
+  min-height:20px;
+  font-size:10px;
+  font-weight:800;
+  color:var(--pink2);
+  margin:8px 0
 }
 
-.faltante.rojo{
-    color:#c55252;
+.empty-module{
+  min-height:360px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:30px;
+  border-radius:30px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  box-shadow:var(--shadow)
 }
 
-/* =========================
-   LISTA GENERADA
-========================= */
+.empty-icon{
+  width:88px;
+  height:88px;
+  display:grid;
+  place-items:center;
+  border-radius:29px;
+  background:var(--bg2);
+  font-size:48px;
+  margin-bottom:18px
+}
 
-.resultado{
-    background:#fff;
-    max-width:700px;
-    margin:20px auto;
-    padding:18px;
+.empty-module h2{
+  font-size:19px
+}
 
-    border-radius:20px;
+.empty-module p{
+  max-width:280px;
+  margin-top:8px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.6
+}
 
-    box-shadow:0 5px 15px rgba(0,0,0,0.10);
+.bottom-nav{
+  position:fixed;
+  left:50%;
+  bottom:calc(9px + env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  z-index:200;
+  width:min(590px,calc(100% - 18px));
+  height:70px;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:3px;
+  padding:6px;
+  border-radius:25px;
+  border:1px solid var(--border);
+  background:var(--nav);
+  backdrop-filter:blur(24px);
+  box-shadow:0 18px 55px rgba(65,25,45,.2)
+}
 
-    display:none;
+.nav-button{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  border-radius:18px;
+  background:transparent;
+  color:var(--muted);
+  cursor:pointer
 }
 
-.resultado h2{
-    margin-top:0;
-    color:#8f5268;
+.nav-icon{
+  font-size:19px
 }
 
-#listaFinal{
-    white-space:pre-line;
-    line-height:1.7;
-    font-size:14px;
+.nav-label{
+  font-size:8px;
+  font-weight:700
 }
 
-/* =========================
-   SIN RESULTADOS
-========================= */
+.nav-button.active{
+  color:var(--pink2);
+  background:var(--bg2)
+}
 
-#sinResultados{
-    display:none;
-    text-align:center;
-    padding:25px;
-    color:#8d737c;
-    font-size:15px;
+.toast{
+  position:fixed;
+  z-index:500;
+  left:50%;
+  bottom:92px;
+  transform:translate(-50%,18px);
+  opacity:0;
+  padding:11px 16px;
+  border-radius:99px;
+  background:#35262d;
+  color:white;
+  font-size:11px;
+  pointer-events:none;
+  transition:.25s
 }
 
-/* =========================
-   ANIMACIÓN CUTE
-========================= */
+.toast.show{
+  opacity:1;
+  transform:translate(-50%,0)
+}
 
-.animacionCute{
-    position:fixed;
+.bear-pop{
+  position:fixed;
+  left:50%;
+  top:50%;
+  z-index:999;
+  transform:translate(-50%,-50%) scale(.6);
+  opacity:0;
+  pointer-events:none;
+  text-align:center;
+  transition:.25s
+}
 
-    left:50%;
-    top:50%;
+.bear-pop.show{
+  opacity:1;
+  transform:translate(-50%,-50%) scale(1)
+}
 
-    transform:translate(-50%,-50%) scale(0.5);
+.bear-pop .bear{
+  font-size:78px
+}
 
-    background:#fff7fa;
+.bear-pop div:last-child{
+  margin-top:5px;
+  padding:10px 16px;
+  border-radius:18px;
+  background:var(--surface);
+  color:var(--text);
+  font-weight:850;
+  box-shadow:var(--shadow)
+}
 
-    padding:28px 35px;
+@media(max-width:370px){
+  .app{padding:0 11px}
+  .topbar{margin:0 -11px;padding:0 11px}
+  .hero{padding:23px 19px}
+  .hero-title{font-size:29px}
+  .hero-bear{right:5px;font-size:74px}
+  .menu-grid{gap:8px}
+  .menu-card{min-height:125px;padding:13px}
+}
 
-    border-radius:30px;
+.name-overlay{
+  position:fixed;
+  inset:0;
+  z-index:900;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(30,12,22,.55);
+  backdrop-filter:blur(10px)
+}
 
-    box-shadow:
-        0 15px 50px rgba(0,0,0,0.20);
+.name-overlay.show{
+  display:flex
+}
 
-    text-align:center;
+.name-modal{
+  width:min(100%,390px);
+  padding:25px;
+  border-radius:30px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  box-shadow:0 30px 80px rgba(0,0,0,.25);
+  text-align:center;
+  animation:modalIn .3s ease
+}
 
-    z-index:9999;
+@keyframes modalIn{
+  from{opacity:0;transform:translateY(15px) scale(.96)}
+  to{opacity:1;transform:none}
+}
 
-    opacity:0;
-    pointer-events:none;
+.name-bear{
+  font-size:58px;
+  animation:float 3s ease-in-out infinite
 }
 
-.animacionCute.mostrar{
-    animation:aparecerCute 1.8s ease forwards;
+.name-modal h2{
+  margin-top:8px;
+  font-size:21px
 }
 
-.osito{
-    font-size:65px;
+.name-modal p{
+  margin:7px auto 17px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.5
+}
 
-    animation:
-        brincar 0.7s ease-in-out infinite alternate;
+.name-input{
+  width:100%;
+  padding:14px 16px;
+  border-radius:16px;
+  border:2px solid var(--border);
+  outline:0;
+  background:var(--bg);
+  color:var(--text);
+  text-align:center;
+  font-weight:750
 }
 
-.mensajeCute{
-    margin-top:8px;
-    font-weight:bold;
-    color:#98556f;
-    font-size:17px;
+.name-input:focus{
+  border-color:var(--pink)
 }
 
-.corazones{
-    position:absolute;
-    font-size:20px;
-    animation:flotar 1.5s ease forwards;
+.name-save{
+  width:100%;
+  margin-top:10px;
+  padding:14px;
+  border-radius:16px;
+  cursor:pointer;
+  color:white;
+  background:linear-gradient(135deg,var(--pink),var(--pink2));
+  font-weight:850
 }
 
-.corazon1{
-    left:15px;
-    top:20px;
+.name-change{
+  margin-top:9px;
+  padding:7px 10px;
+  border-radius:12px;
+  background:transparent;
+  color:var(--muted);
+  font-size:9px;
+  cursor:pointer
 }
 
-.corazon2{
-    right:18px;
-    top:30px;
+.welcome-name{
+  font-weight:900
 }
 
-.corazon3{
-    left:35px;
-    bottom:15px;
+.copy-bear-animation{
+  display:inline-block;
+  animation:copyBearBounce .65s ease-in-out infinite alternate
 }
 
-.corazon4{
-    right:35px;
-    bottom:18px;
+@keyframes copyBearBounce{
+  from{transform:translateY(4px) rotate(-7deg)}
+  to{transform:translateY(-13px) rotate(7deg)}
 }
 
-@keyframes aparecerCute{
+/* =========================================================
+   BEARY'S — CAPA VISUAL / ROSA BEBÉ
+   ========================================================= */
 
-    0%{
-        opacity:0;
-        transform:translate(-50%,-50%) scale(0.5);
-    }
+body:not(.dark){
+  background:
+    radial-gradient(circle at 7% 5%,rgba(255,188,214,.30),transparent 22%),
+    radial-gradient(circle at 96% 20%,rgba(255,213,229,.35),transparent 24%),
+    linear-gradient(180deg,#fff7fa 0%,#fff1f6 52%,#fff8fb 100%);
+}
+
+body:not(.dark) .topbar{
+  background:rgba(255,247,250,.82);
+  box-shadow:0 8px 30px rgba(205,103,143,.06);
+}
 
-    25%{
-        opacity:1;
-        transform:translate(-50%,-50%) scale(1.08);
-    }
+body:not(.dark) .brand-logo{
+  background:linear-gradient(145deg,#fff,#ffe0eb);
+  box-shadow:0 12px 30px rgba(255,105,160,.18);
+}
 
-    45%{
-        transform:translate(-50%,-50%) scale(0.96);
-    }
+body:not(.dark) .menu-card,
+body:not(.dark) .phrase-card,
+body:not(.dark) .status-card,
+body:not(.dark) .inventory-area,
+body:not(.dark) .inventory-hero{
+  box-shadow:0 13px 35px rgba(194,91,132,.09);
+}
 
-    65%{
-        transform:translate(-50%,-50%) scale(1);
-    }
+body:not(.dark) .menu-card:hover{
+  border-color:#efadc7;
+  box-shadow:0 16px 38px rgba(255,105,160,.15);
+}
 
-    85%{
-        opacity:1;
-    }
+body:not(.dark) .bottom-nav{
+  box-shadow:0 18px 55px rgba(168,72,111,.16);
+}
 
-    100%{
-        opacity:0;
-        transform:translate(-50%,-50%) scale(1);
-    }
+body:not(.dark) .inventory-search:focus,
+body:not(.dark) .quantity:focus{
+  box-shadow:0 0 0 4px rgba(255,121,173,.12);
 }
 
-@keyframes brincar{
+.pastel-sparkle{
+  position:fixed;
+  pointer-events:none;
+  z-index:-1;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#ffc5db;
+  opacity:.35;
+}
 
-    from{
-        transform:translateY(0) rotate(-4deg);
-    }
+/* =========================================================
+   BEARY'S 2.1 — GLOW + MOBILE POLISH
+   ========================================================= */
 
-    to{
-        transform:translateY(-9px) rotate(4deg);
-    }
+.brand-date{
+  display:block;
+  margin-top:3px;
+  font-size:8px;
+  font-weight:750;
+  color:var(--muted);
+  letter-spacing:.25px;
+  text-transform:lowercase
 }
 
-@keyframes flotar{
+.home-quick-actions{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin-top:9px
+}
 
-    0%{
-        opacity:0;
-        transform:translateY(10px) scale(0.5);
-    }
+.home-quick-actions button{
+  padding:8px 12px;
+  border-radius:13px;
+  background:var(--surface);
+  color:var(--muted);
+  border:1px solid var(--border);
+  font-size:9px;
+  font-weight:800;
+  box-shadow:0 7px 18px rgba(120,50,80,.06);
+  cursor:pointer
+}
 
-    30%{
-        opacity:1;
-    }
+.settings-card{
+  padding:15px;
+  margin-bottom:12px;
+  border-radius:22px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow)
+}
 
-    100%{
-        opacity:0;
-        transform:translateY(-35px) scale(1.3);
-    }
+.settings-profile{
+  display:flex;
+  align-items:center;
+  gap:10px
 }
 
-/* =========================
-   MODO OSCURO
-========================= */
+.settings-avatar{
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  border-radius:16px;
+  background:var(--bg2);
+  font-size:25px
+}
 
-body.modoOscuro{
-    background:#211b1f;
-    color:#f5e9ed;
+.settings-profile>div:nth-child(2){
+  flex:1;
+  min-width:0
 }
 
-body.modoOscuro .encabezado{
-    background:#30262b;
-    border-bottom-color:#57404a;
+.settings-profile strong{
+  display:block;
+  font-size:13px
 }
 
-body.modoOscuro h1{
-    color:#f0b4c8;
+.settings-profile span{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:9px
 }
 
-body.modoOscuro .subtitulo,
-body.modoOscuro .fecha{
-    color:#c9aeb8;
+.settings-profile button{
+  padding:8px 10px;
+  border-radius:11px;
+  background:var(--pinksoft);
+  color:var(--pink2);
+  font-size:9px;
+  font-weight:850;
+  cursor:pointer
 }
 
-body.modoOscuro .seccion{
-    background:#30262b;
-    box-shadow:0 5px 15px rgba(0,0,0,0.35);
+.settings-title{
+  font-size:12px;
+  font-weight:900;
+  margin-bottom:7px
 }
 
-body.modoOscuro .producto{
-    background:#3a2e34;
+.setting-row{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:13px 2px;
+  border-top:1px solid var(--border);
+  background:transparent;
+  color:var(--text);
+  text-align:left;
+  cursor:pointer
 }
 
-body.modoOscuro .producto.verde{
-    background:#293b2d;
+.setting-row span:first-child{
+  min-width:0
 }
 
-body.modoOscuro .producto.amarillo{
-    background:#3c3724;
+.setting-row b{
+  display:block;
+  font-size:11px
 }
 
-body.modoOscuro .producto.rojo{
-    background:#402a2a;
+.setting-row small{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:8px;
+  line-height:1.35
 }
 
-body.modoOscuro .nombre{
-    color:#fff0f4;
+.setting-row>span:last-child{
+  flex-shrink:0;
+  color:var(--pink2);
+  font-weight:900
 }
 
-body.modoOscuro .meta,
-body.modoOscuro .entrada span{
-    color:#c8afb8;
+.setting-row.static{
+  cursor:default
 }
 
-body.modoOscuro input[type="number"],
-body.modoOscuro .buscador{
-    background:#211b1f;
-    color:#fff;
-    border-color:#644b56;
+.mini-toggle{
+  padding:6px 10px;
+  border-radius:99px;
+  background:var(--pink);
+  color:white;
+  font-size:8px;
+  font-weight:900;
+  cursor:pointer
 }
 
-body.modoOscuro .resultado{
-    background:#30262b;
+.mini-toggle.off{
+  background:var(--muted)
 }
 
-body.modoOscuro .animacionCute{
-    background:#30262b;
+.danger-card{
+  border-color:color-mix(in srgb,var(--danger) 30%,var(--border))
 }
 
-body.modoOscuro .mensajeCute{
-    color:#f0b4c8;
+.danger-button{
+  width:100%;
+  padding:11px;
+  border-radius:13px;
+  background:color-mix(in srgb,var(--danger) 12%,transparent);
+  color:var(--danger);
+  font-size:10px;
+  font-weight:850;
+  cursor:pointer
 }
 
-/* =========================
-   MÓVIL
-========================= */
+body.animations-off *{
+  animation:none!important;
+  transition:none!important;
+  scroll-behavior:auto!important
+}
 
-@media(max-width:600px){
+.menu-card,
+.phrase-card,
+.status-card,
+.inventory-area,
+.inventory-hero,
+.settings-card{
+  transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease
+}
 
-    h1{
-        font-size:26px;
-    }
+.menu-card:hover,
+.settings-card:hover{
+  transform:translateY(-2px)
+}
 
-    .producto{
-        padding:10px;
-    }
+body.dark .menu-card:hover,
+body.dark .phrase-card:hover,
+body.dark .status-card:hover,
+body.dark .inventory-area:hover,
+body.dark .inventory-hero:hover{
+  box-shadow:
+    0 0 0 1px rgba(255,130,178,.12),
+    0 0 28px rgba(255,91,157,.13),
+    var(--shadow)
+}
 
-    .nombre{
-        font-size:14px;
-    }
+body:not(.dark) .menu-card:hover,
+body:not(.dark) .phrase-card:hover,
+body:not(.dark) .status-card:hover,
+body:not(.dark) .inventory-area:hover,
+body:not(.dark) .inventory-hero:hover{
+  box-shadow:
+    0 0 0 1px rgba(255,155,193,.12),
+    0 0 25px rgba(255,121,173,.10),
+    var(--shadow)
+}
 
-    input[type="number"]{
-        width:65px;
-    }
+body.dark .hero{
+  box-shadow:
+    0 20px 55px rgba(255,76,150,.18),
+    0 0 35px rgba(255,76,150,.08)
+}
 
-    .botones button{
-        flex:1;
-        min-width:140px;
-    }
+body.dark .bottom-nav{
+  box-shadow:
+    0 18px 55px rgba(0,0,0,.42),
+    0 0 25px rgba(255,92,158,.08)
+}
 
+body:not(.dark) .bottom-nav{
+  box-shadow:
+    0 18px 55px rgba(168,72,111,.13),
+    0 0 22px rgba(255,121,173,.07)
 }
 
+@media(max-width:420px){
+  .brand-name{font-size:16px}
+  .brand-date{font-size:7.5px}
+  .home-quick-actions button{
+    font-size:8px;
+    padding:7px 10px
+  }
+}
 </style>
 </head>
 
-
 <body>
 
-<!-- =========================
-     ENCABEZADO
-========================= -->
+<div class="app">
 
-<div class="encabezado">
+<header class="topbar">
 
-    <div class="decoracion">
-        🐻 ☕ 🐻 ☕ 🐻
+  <div class="brand">
+
+    <div class="brand-logo">🐻</div>
+
+    <div>
+      <span class="brand-name">Beary's Coffee Shop ☕</span>
+      <span class="brand-subtitle">Tu mini centro de trabajo</span>
+      <span class="brand-date" id="brandDate">Cargando fecha...</span>
     </div>
 
-    <h1>🐻 Beary's Inventario</h1>
+  </div>
 
-    <div class="subtitulo">
-        ☕ Inventario diario · Escribe cuánto tienes físicamente
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+
+</header>
+
+
+<!-- =========================
+     HOME
+========================= -->
+
+<section class="page active" id="homePage">
+
+  <div class="hero">
+
+    <span class="hero-star">✦</span>
+    <span class="hero-star">✧</span>
+    <span class="hero-star">✦</span>
+
+    <div class="hero-content">
+
+      <div class="hero-label">BIENVENIDO A BEARY'S ☕</div>
+
+      <h1 class="hero-title">
+        Hola, <span class="welcome-name" id="welcomeName">amigo</span><br>
+        🧸♡
+      </h1>
+
+      <p class="hero-description">
+        Qué bueno verte por aquí. Vamos a dejar todo listo para sobrevivir al rush.
+      </p>
+
+      <button class="hero-button" onclick="showToast('🧸 ¡Que tengas un día increíble!')">
+        Comenzar mi día →
+      </button>
+
     </div>
 
-    <div class="fecha" id="fecha"></div>
+    <div class="hero-bear">🧸</div>
 
-</div>
+  </div>
+
+
+  <div class="section-header">
+    <h2>¿Qué vamos a hacer?</h2>
+    <span>Menú principal</span>
+  </div>
+
+
+  <div class="menu-grid">
+
+    <button class="menu-card" onclick="openPage('inventory')">
+      <div class="menu-icon">📦</div>
+      <span class="menu-card-title">Inventario</span>
+      <span class="menu-card-description">Productos y existencias</span>
+    </button>
+
+    <button class="menu-card" onclick="openPage('opening')">
+      <div class="menu-icon">🌅</div>
+      <span class="menu-card-title">Apertura</span>
+      <span class="menu-card-description">Preparar el turno</span>
+    </button>
+
+    <button class="menu-card" onclick="openPage('closing')">
+      <div class="menu-icon">🌙</div>
+      <span class="menu-card-title">Cierre</span>
+      <span class="menu-card-description">Terminar el turno</span>
+    </button>
+
+    <button class="menu-card" onclick="openPage('cleaning')">
+      <div class="menu-icon">🧼</div>
+      <span class="menu-card-title">Limpieza</span>
+      <span class="menu-card-description">Todo limpio y en orden</span>
+    </button>
+
+    <button class="menu-card" onclick="openPage('recipes')">
+      <div class="menu-icon">☕</div>
+      <span class="menu-card-title">Recetario</span>
+      <span class="menu-card-description">Recetas de bebidas</span>
+    </button>
+
+    <button class="menu-card" onclick="openPage('history')">
+      <div class="menu-icon">📖</div>
+      <span class="menu-card-title">Historial</span>
+      <span class="menu-card-description">Todo el movimiento</span>
+    </button>
+
+  </div>
+
+
+  <div class="section-header">
+    <h2>Un poquito de cariño ♡</h2>
+    <span>Para hoy</span>
+  </div>
+
+
+  <div class="phrase-card">
+
+    <div class="phrase-top">
+
+      <div class="phrase-label">
+        <div class="phrase-label-icon">💌</div>
+        <span>Una frase para hoy</span>
+      </div>
+
+      <span class="phrase-number" id="phraseNumber">1 / 8</span>
+
+    </div>
+
+    <p class="phrase-text" id="phraseText">
+      “Hoy también cuenta cada pequeño esfuerzo.”
+    </p>
+
+    <div class="phrase-bottom">
+
+      <div class="phrase-bear">🧸</div>
+
+      <button class="phrase-button" onclick="nextPhrase()">
+        Otra frase ♡
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="section-header">
+    <h2>Estado de Beary's</h2>
+  </div>
+
+
+  <div class="status-card">
+
+    <div class="status-content">
+
+      <div class="status-icon">✨</div>
+
+      <div>
+        <span class="status-title">Todo listo para comenzar</span>
+        <span class="status-description">Tu espacio Beary's está preparado.</span>
+      </div>
+
+    </div>
+
+    <div class="status-dot"></div>
+
+  </div>
+
+
+  <div class="home-quick-actions">
+
+    <button onclick="changeName()">✏️ Mi nombre</button>
+
+    <button onclick="openSettings()">⚙️ Ajustes</button>
+
+  </div>
+
+</section>
 
 
 <!-- =========================
-     BUSCADOR
+     AJUSTES
 ========================= -->
 
-<input
-    type="text"
-    id="buscador"
-    class="buscador"
-    placeholder="🔎 Buscar producto..."
-    oninput="buscarProductos()"
->
+<section class="page" id="settingsPage">
+
+  <div class="inner-header">
+
+    <button class="back-button" onclick="goHome()">←</button>
+
+    <div class="inner-title">
+      <h1>Ajustes ⚙️</h1>
+      <p>Personaliza tu Beary's</p>
+    </div>
+
+  </div>
 
 
-<!-- =========================
-     BOTONES
-========================= -->
+  <div class="settings-card">
 
-<div class="botones">
+    <div class="settings-profile">
 
-    <button
-        class="botonGenerar"
-        onclick="generarYCopiar()">
-        📋 Generar lista
+      <div class="settings-avatar">🧸</div>
+
+      <div>
+        <strong id="settingsName">Tu nombre</strong>
+        <span>Este dispositivo</span>
+      </div>
+
+      <button onclick="changeName()">Editar</button>
+
+    </div>
+
+  </div>
+
+
+  <div class="settings-card">
+
+    <div class="settings-title">🎨 Apariencia</div>
+
+    <button class="setting-row" onclick="toggleTheme()">
+
+      <span>
+        <b id="appearanceTitle">Modo claro</b>
+        <small>Cambia entre rosa bebé y modo noche</small>
+      </span>
+
+      <span id="settingsThemeIcon">☀️</span>
+
     </button>
 
-    <button
-        class="botonNueva"
-        onclick="nuevaLista()">
-        🧹 Nueva lista
+
+    <div class="setting-row">
+
+      <span>
+        <b>✨ Animaciones</b>
+        <small>Brillos y transiciones de Beary's</small>
+      </span>
+
+      <button class="mini-toggle on" id="animationToggle" onclick="toggleAnimations(event)">
+        ON
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="settings-card">
+
+    <div class="settings-title">📱 Aplicación</div>
+
+    <div class="setting-row static">
+
+      <span>
+        <b>Versión</b>
+        <small>Base Beary's Coffee Shop</small>
+      </span>
+
+      <span>2.1</span>
+
+    </div>
+
+
+    <div class="setting-row static">
+
+      <span>
+        <b>Datos locales</b>
+        <small>Nombre e inventario guardados en este dispositivo</small>
+      </span>
+
+      <span>💾</span>
+
+    </div>
+
+  </div>
+
+
+  <div class="settings-card danger-card">
+
+    <div class="settings-title">🧹 Zona de limpieza</div>
+
+    <button class="danger-button" onclick="clearLocalData()">
+      Borrar datos de este dispositivo
     </button>
 
-    <button
-        class="botonTema"
-        onclick="cambiarTema()"
-        id="botonTema">
-        🌙 Modo oscuro
-    </button>
+  </div>
 
-</div>
+</section>
 
 
 <!-- =========================
      INVENTARIO
 ========================= -->
 
-<div class="contenedor">
+<section class="page" id="inventoryPage">
+
+  <div class="inner-header">
+
+    <button class="back-button" onclick="goHome()">←</button>
+
+    <div class="inner-title">
+      <h1>Inventario 📦</h1>
+      <p>Inventario diario de Beary's</p>
+    </div>
+
+  </div>
+
+
+  <div class="inventory-hero">
+
+    <div class="inventory-top">
+
+      <strong>Progreso del inventario</strong>
+
+      <span id="inventoryProgressText">
+        0% completo
+      </span>
+
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="inventoryProgress"></div>
+    </div>
+
+
+    <div class="inventory-stats">
+
+      <div class="inv-stat">
+        <b id="statTotal">0</b>
+        <small>Productos</small>
+      </div>
+
+      <div class="inv-stat">
+        <b id="statComplete">0</b>
+        <small>Completos</small>
+      </div>
+
+      <div class="inv-stat">
+        <b id="statLow">0</b>
+        <small>Faltantes</small>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <input
+    id="inventorySearch"
+    class="inventory-search"
+    type="search"
+    placeholder="🔎 Buscar producto..."
+    autocomplete="off"
+  >
+
+
+  <div id="inventoryAreas"></div>
+
+
+  <div class="inventory-actions">
+
+    <button class="inv-btn primary" onclick="generateInventoryList()">
+      📋 Generar y copiar lista
+    </button>
+
+    <button class="inv-btn secondary" onclick="newInventoryList()">
+      🧹 Nueva lista
+    </button>
+
+  </div>
+
+
+  <div class="inventory-message" id="inventoryMessage"></div>
+
+
+  <textarea
+    id="inventoryResult"
+    class="result-box"
+    readonly
+    placeholder="Aquí aparecerá tu lista de faltantes..."
+  ></textarea>
+
+</section>
 
 
 <!-- =========================
-     BODEGA
+     APERTURA
 ========================= -->
 
-<div class="seccion gris">
+<section class="page" id="openingPage">
 
-    <div class="tituloSeccion">
-        📦 Bodega, refri y limpieza
-    </div>
-
-
-    <div class="producto" data-nombre="jabón de trastes">
-
-        <div class="semaforo"></div>
-
-        <div class="nombre">
-            Jabón de trastes
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0" step="0.25"
-                data-name="Jabón de trastes"
-                data-target="1">
-        </div>
-
-    </div>
-
-
-    <div class="producto" data-nombre="jabón de manos">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Jabón de manos
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Jabón de manos"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="guantes para baño">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Guantes para Baño
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Guantes para Baño"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="guantes para horno">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Guantes para horno
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Guantes para horno"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="esponja de carita">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Esponja de carita
-            <div class="meta">Meta: 3</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Esponja de carita"
-                data-target="3">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="esponja para vasos">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Esponja para vasos
-            <div class="meta">Meta: 3</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Esponja para vasos"
-                data-target="3">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="fibra de acero">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Fibra de acero
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Fibra de acero"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="fibra verde">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Fibra verde
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Fibra verde"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="piedra pómez">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Piedra pómez
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Piedra pómez"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="fabuloso">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Fabuloso
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Fabuloso"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="kalan">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Kalan
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Kalan"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="cloro">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Cloro
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Cloro"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="ajax de baño">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Ajax de baño
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Ajax de baño"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="ajax limón">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Ajax limón
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Ajax limón"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="aromatizante">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Aromatizante
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Aromatizante"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="windex">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Windex
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Windex"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="drano">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Drano
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Drano"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="mechudo">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Mechudo
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Mechudo"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="palitos de madera">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Palitos de madera
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Palitos de madera"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="cafiza">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Cafiza
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Cafiza"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="tenedores desechables">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Tenedores desechables
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Tenedores desechables"
-                data-target="2">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="cucharas desechables">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Cucharas desechables
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Cucharas desechables"
-                data-target="2">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="popotes">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Popotes
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Popotes"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="bolsas chicas de basura">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Bolsas chicas de basura
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Bolsas chicas de basura"
-                data-target="2">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="bolsas grandes de basura">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Bolsas grandes de basura
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Bolsas grandes de basura"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="mangas">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Mangas
-            <div class="meta">Meta: 7</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Mangas"
-                data-target="7">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="papel de baño">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Papel de baño
-            <div class="meta">Meta: 8</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Papel de baño"
-                data-target="8">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="café">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Café
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Café"
-                data-target="2">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="vasos de 16 oz">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Vasos de 16 oz
-            <div class="meta">Meta: 4</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Vasos de 16 oz"
-                data-target="4">
-        </div>
-    </div>
-
+  <div class="inner-header">
 
-    <div class="producto" data-nombre="vasos de 12 oz">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Vasos de 12 oz
-            <div class="meta">Meta: 5</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Vasos de 12 oz"
-                data-target="5">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="vasos transparentes">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Vasos transparentes
-            <div class="meta">Meta: 5</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Vasos transparentes"
-                data-target="5">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="vasos de 10 oz">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Vasos de 10 oz
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Vasos de 10 oz"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="vasos de espresso">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Vasos de espresso
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Vasos de espresso"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="azúcar">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Azúcar
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Azúcar"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="splenda">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Splenda
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Splenda"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="stevia">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Stevia
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Stevia"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="guantes">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Guantes
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Guantes"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="servilletas">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Servilletas
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Servilletas"
-                data-target="2">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="servitoallas">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Servitoallas
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Servitoallas"
-                data-target="2">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="sanitas">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Sanitas
-            <div class="meta">Meta: 3</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Sanitas"
-                data-target="3">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="azúcar mascabado">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Azúcar mascabado
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Azúcar mascabado"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="charolas chicas">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Charolas chicas
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Charolas chicas"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="charolas grandes">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Charolas grandes
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Charolas grandes"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="mangas desechables">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Mangas desechables
-            <div class="meta">Meta: 4</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Mangas desechables"
-                data-target="4">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="bolsas para pollo y cochinita">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Bolsas para pollo y cochinita
-            <div class="meta">Meta: 3</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Bolsas para pollo y cochinita"
-                data-target="3">
-        </div>
-    </div>
+    <button class="back-button" onclick="goHome()">←</button>
 
-
-    <div class="producto" data-nombre="rejillas">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Rejillas
-            <div class="meta">Meta: 30</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Rejillas"
-                data-target="30">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="totopos">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Totopos
-            <div class="meta">Meta: 16</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Totopos"
-                data-target="16">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="frijoles">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Frijoles
-            <div class="meta">Meta: 6</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Frijoles"
-                data-target="6">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="té de frutos">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Té de frutos
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Té de frutos"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="té fresa vainilla">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Té fresa/vainilla
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Té fresa/vainilla"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="té verde">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Té verde
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Té verde"
-                data-target="1">
-        </div>
-    </div>
-
-
-    <div class="producto" data-nombre="té earl grey">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Té Earl Grey
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Té Earl Grey"
-                data-target="1">
-        </div>
+    <div class="inner-title">
+      <h1>Apertura 🌅</h1>
+      <p>Actividades para comenzar</p>
     </div>
 
+  </div>
 
-    <div class="producto" data-nombre="té english">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Té English
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Té English"
-                data-target="1">
-        </div>
-    </div>
 
+  <div class="empty-module">
 
-    <div class="producto" data-nombre="té mango fresa">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Té mango/fresa
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Té mango/fresa"
-                data-target="1">
-        </div>
-    </div>
+    <div class="empty-icon">🌅</div>
 
+    <h2>Checklist de apertura</h2>
 
-    <div class="producto" data-nombre="té limón">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Té limón
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Té limón"
-                data-target="1">
-        </div>
-    </div>
+    <p>
+      Aquí construiremos las actividades reales de apertura y las organizaremos por turno.
+    </p>
 
+  </div>
 
-    <div class="producto" data-nombre="té limón jengibre">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Té limón/jengibre
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Té limón/jengibre"
-                data-target="1">
-        </div>
-    </div>
+</section>
 
 
-    <div class="producto" data-nombre="té manzanilla">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Té manzanilla
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Té manzanilla"
-                data-target="1">
-        </div>
-    </div>
+<!-- =========================
+     CIERRE
+========================= -->
 
+<section class="page" id="closingPage">
 
-    <div class="producto" data-nombre="té manzanilla vainilla">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Té manzanilla/vainilla
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Té manzanilla/vainilla"
-                data-target="1">
-        </div>
-    </div>
+  <div class="inner-header">
 
+    <button class="back-button" onclick="goHome()">←</button>
 
-    <div class="producto" data-nombre="té de granada">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Té de granada
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Té de granada"
-                data-target="1">
-        </div>
+    <div class="inner-title">
+      <h1>Cierre 🌙</h1>
+      <p>Actividades para terminar</p>
     </div>
 
+  </div>
 
-    <div class="producto" data-nombre="helado cookie and cream">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Helado de cookie and cream
-            <div class="meta">Meta: 10</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Helado de cookie and cream"
-                data-target="10">
-        </div>
-    </div>
 
+  <div class="empty-module">
 
-    <div class="producto" data-nombre="helado de vainilla">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Helado de vainilla
-            <div class="meta">Meta: 4</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Helado de vainilla"
-                data-target="4">
-        </div>
-    </div>
+    <div class="empty-icon">🌙</div>
 
+    <h2>Checklist de cierre</h2>
 
-    <div class="producto" data-nombre="helado de chocolate">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Helado de chocolate
-            <div class="meta">Meta: 4</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Helado de chocolate"
-                data-target="4">
-        </div>
-    </div>
+    <p>
+      Aquí pondremos todas las tareas necesarias para dejar Beary's listo para el siguiente día.
+    </p>
 
+  </div>
 
-    <div class="producto" data-nombre="helado de fresa">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Helado de fresa
-            <div class="meta">Meta: 10</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Helado de fresa"
-                data-target="10">
-        </div>
-    </div>
+</section>
 
 
-    <div class="producto" data-nombre="harina de waffles">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Harina de waffles
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Harina de waffles"
-                data-target="1">
-        </div>
-    </div>
+<!-- =========================
+     LIMPIEZA
+========================= -->
 
+<section class="page" id="cleaningPage">
 
-    <div class="producto" data-nombre="jamón">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Jamón
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Jamón"
-                data-target="2">
-        </div>
-    </div>
+  <div class="inner-header">
 
+    <button class="back-button" onclick="goHome()">←</button>
 
-    <div class="producto" data-nombre="tocino en trozos">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Tocino en trozos
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Tocino en trozos"
-                data-target="2">
-        </div>
+    <div class="inner-title">
+      <h1>Limpieza 🧼</h1>
+      <p>Mantener todo en orden</p>
     </div>
 
+  </div>
 
-    <div class="producto" data-nombre="tocino en tiras">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Tocino en tiras
-            <div class="meta">Meta: 1</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Tocino en tiras"
-                data-target="1">
-        </div>
-    </div>
 
+  <div class="empty-module">
 
-    <div class="producto" data-nombre="jitomate">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Jitomate
-            <div class="meta">Meta: 20</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Jitomate"
-                data-target="20">
-        </div>
-    </div>
+    <div class="empty-icon">🧼</div>
 
+    <h2>Lista de limpieza</h2>
 
-    <div class="producto" data-nombre="cebolla">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Cebolla
-            <div class="meta">Meta: 4</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Cebolla"
-                data-target="4">
-        </div>
-    </div>
+    <p>
+      La checklist de limpieza será nuestro siguiente módulo.
+    </p>
 
+  </div>
 
-    <div class="producto" data-nombre="lechuga">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Lechuga
-            <div class="meta">Meta: 3</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Lechuga"
-                data-target="3">
-        </div>
-    </div>
+</section>
 
 
-    <div class="producto" data-nombre="limón">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Limón
-            <div class="meta">Meta: 10</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Limón"
-                data-target="10">
-        </div>
-    </div>
+<!-- =========================
+     RECETAS
+========================= -->
 
+<section class="page" id="recipesPage">
 
-    <div class="producto" data-nombre="chile serrano">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Chile serrano
-            <div class="meta">Meta: 0.25</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0" step="0.25"
-                data-name="Chile serrano"
-                data-target="0.25">
-        </div>
-    </div>
+  <div class="inner-header">
 
+    <button class="back-button" onclick="goHome()">←</button>
 
-    <div class="producto" data-nombre="manzana">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Manzana
-            <div class="meta">Meta: 4</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Manzana"
-                data-target="4">
-        </div>
+    <div class="inner-title">
+      <h1>Recetario ☕</h1>
+      <p>Bebidas y preparación</p>
     </div>
 
+  </div>
 
-    <div class="producto" data-nombre="relleno de dulce de leche">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Relleno de dulce de leche
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Relleno de dulce de leche"
-                data-target="2">
-        </div>
-    </div>
 
+  <div class="empty-module">
 
-    <div class="producto" data-nombre="relleno de chocolate">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Relleno de chocolate
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Relleno de chocolate"
-                data-target="2">
-        </div>
-    </div>
+    <div class="empty-icon">☕</div>
 
+    <h2>Recetario de Beary's</h2>
 
-    <div class="producto" data-nombre="relleno de mascarpone">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Relleno de mascarpone
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Relleno de mascarpone"
-                data-target="2">
-        </div>
-    </div>
+    <p>
+      Aquí guardaremos recetas, ingredientes, cantidades y preparación de cada bebida.
+    </p>
 
+  </div>
 
-    <div class="producto" data-nombre="relleno de frutos rojos">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Relleno de frutos rojos
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Relleno de frutos rojos"
-                data-target="2">
-        </div>
-    </div>
+</section>
 
 
-    <div class="producto" data-nombre="salsa verde">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Salsa verde
-            <div class="meta">Meta: 10</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Salsa verde"
-                data-target="10">
-        </div>
-    </div>
+<!-- =========================
+     HISTORIAL
+========================= -->
 
+<section class="page" id="historyPage">
 
-    <div class="producto" data-nombre="salsa roja">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Salsa roja
-            <div class="meta">Meta: 10</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Salsa roja"
-                data-target="10">
-        </div>
-    </div>
+  <div class="inner-header">
 
+    <button class="back-button" onclick="goHome()">←</button>
 
-    <div class="producto" data-nombre="cochinita">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Cochinita
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Cochinita"
-                data-target="2">
-        </div>
+    <div class="inner-title">
+      <h1>Historial 📖</h1>
+      <p>Todo el movimiento</p>
     </div>
 
+  </div>
 
-    <div class="producto" data-nombre="pollo">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Pollo
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Pollo"
-                data-target="2">
-        </div>
-    </div>
 
+  <div class="empty-module">
 
-    <div class="producto" data-nombre="crema">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Crema
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Crema"
-                data-target="2">
-        </div>
-    </div>
+    <div class="empty-icon">📖</div>
 
+    <h2>Historial de Beary's</h2>
 
-    <div class="producto" data-nombre="crema batida">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Crema batida
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Crema batida"
-                data-target="2">
-        </div>
-    </div>
+    <p>
+      Aquí quedará registrado el movimiento de la aplicación cuando conectemos la base de datos.
+    </p>
 
+  </div>
 
-    <div class="producto" data-nombre="papas">
-        <div class="semaforo"></div>
-        <div class="nombre">
-            Papas
-            <div class="meta">Meta: 2</div>
-            <div class="faltante"></div>
-        </div>
-        <div class="entrada">
-            <span>Tengo</span>
-            <input type="number" min="0"
-                data-name="Papas"
-                data-target="2">
-        </div>
-    </div>
+</section>
 
 </div>
 
 
 <!-- =========================
-     BEBIDAS
+     NAVEGACIÓN
 ========================= -->
 
-<div class="seccion morado">
+<nav class="bottom-nav">
 
-<div class="tituloSeccion">
-    ☕ Bebidas
-</div>
+  <button class="nav-button active" onclick="goHome()">
+    <span class="nav-icon">⌂</span>
+    <span class="nav-label">Inicio</span>
+  </button>
 
+  <button class="nav-button" onclick="openPage('inventory')">
+    <span class="nav-icon">📦</span>
+    <span class="nav-label">Inventario</span>
+  </button>
 
-<div class="producto" data-nombre="coca">
-<div class="semaforo"></div>
-<div class="nombre">Coca<div class="meta">Meta: 7</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Coca" data-target="7"></div>
-</div>
+  <button class="nav-button" onclick="openPage('opening')">
+    <span class="nav-icon">✓</span>
+    <span class="nav-label">Actividades</span>
+  </button>
 
+  <button class="nav-button" onclick="openPage('recipes')">
+    <span class="nav-icon">☕</span>
+    <span class="nav-label">Recetas</span>
+  </button>
 
-<div class="producto" data-nombre="coca zero">
-<div class="semaforo"></div>
-<div class="nombre">Coca zero<div class="meta">Meta: 5</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Coca zero" data-target="5"></div>
-</div>
+  <button class="nav-button" onclick="openPage('history')">
+    <span class="nav-icon">☰</span>
+    <span class="nav-label">Más</span>
+  </button>
 
-
-<div class="producto" data-nombre="coca light">
-<div class="semaforo"></div>
-<div class="nombre">Coca light<div class="meta">Meta: 5</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Coca light" data-target="5"></div>
-</div>
-
-
-<div class="producto" data-nombre="sprite">
-<div class="semaforo"></div>
-<div class="nombre">Sprite<div class="meta">Meta: 4</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Sprite" data-target="4"></div>
-</div>
+</nav>
 
 
-<div class="producto" data-nombre="mundet">
-<div class="semaforo"></div>
-<div class="nombre">Mundet<div class="meta">Meta: 4</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Mundet" data-target="4"></div>
-</div>
+<div class="toast" id="toast"></div>
 
 
-<div class="producto" data-nombre="flanes">
-<div class="semaforo"></div>
-<div class="nombre">Flanes<div class="meta">Meta: 5</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Flanes" data-target="5"></div>
-</div>
+<div class="bear-pop" id="bearPop">
 
+  <div class="bear copy-bear-animation">🐻</div>
 
-<div class="producto" data-nombre="bolsas de pan">
-<div class="semaforo"></div>
-<div class="nombre">Bolsas de pan<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Bolsas de pan" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="bolsas grandes">
-<div class="semaforo"></div>
-<div class="nombre">Bolsas grandes<div class="meta">Meta: 40</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Bolsas grandes" data-target="40"></div>
-</div>
-
-
-<div class="producto" data-nombre="agua santa maría">
-<div class="semaforo"></div>
-<div class="nombre">Agua Santa María<div class="meta">Meta: 7</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Agua Santa María" data-target="7"></div>
-</div>
-
-
-<div class="producto" data-nombre="topochico">
-<div class="semaforo"></div>
-<div class="nombre">Topochico<div class="meta">Meta: 6</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Topochico" data-target="6"></div>
-</div>
-
-
-<div class="producto" data-nombre="vasos para porciones">
-<div class="semaforo"></div>
-<div class="nombre">Vasos para porciones (llevar)<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Vasos para porciones (llevar)" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="tapas para porciones">
-<div class="semaforo"></div>
-<div class="nombre">Tapas para porciones (llevar)<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Tapas para porciones (llevar)" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="papel encerado">
-<div class="semaforo"></div>
-<div class="nombre">Papel encerado<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Papel encerado" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="turín">
-<div class="semaforo"></div>
-<div class="nombre">Turín<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Turín" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="chai">
-<div class="semaforo"></div>
-<div class="nombre">Chai<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Chai" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="chai mango">
-<div class="semaforo"></div>
-<div class="nombre">Chai Mango<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Chai Mango" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="taro">
-<div class="semaforo"></div>
-<div class="nombre">Taro<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Taro" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="matcha">
-<div class="semaforo"></div>
-<div class="nombre">Matcha<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Matcha" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="galleta oreo">
-<div class="semaforo"></div>
-<div class="nombre">Galleta Oreo<div class="meta">Meta: 3</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Galleta Oreo" data-target="3"></div>
-</div>
-
-
-<div class="producto" data-nombre="suavicremas">
-<div class="semaforo"></div>
-<div class="nombre">Suavicremas<div class="meta">Meta: 2</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Suavicremas" data-target="2"></div>
-</div>
-
-
-<div class="producto" data-nombre="galleta lotus">
-<div class="semaforo"></div>
-<div class="nombre">Galleta Lotus<div class="meta">Meta: 4</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Galleta Lotus" data-target="4"></div>
-</div>
-
-
-<div class="producto" data-nombre="chocolate abuelita">
-<div class="semaforo"></div>
-<div class="nombre">Chocolate Abuelita<div class="meta">Meta: 3</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Chocolate Abuelita" data-target="3"></div>
-</div>
-
-
-<div class="producto" data-nombre="chocolate de decoración">
-<div class="semaforo"></div>
-<div class="nombre">Chocolate de decoración<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Chocolate de decoración" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="café descafeinado">
-<div class="semaforo"></div>
-<div class="nombre">Café descafeinado<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Café descafeinado" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="cajeta">
-<div class="semaforo"></div>
-<div class="nombre">Cajeta<div class="meta">Meta: 4</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Cajeta" data-target="4"></div>
-</div>
-
-
-<div class="producto" data-nombre="crema lotus">
-<div class="semaforo"></div>
-<div class="nombre">Crema Lotus<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Crema Lotus" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="nutella">
-<div class="semaforo"></div>
-<div class="nombre">Nutella<div class="meta">Meta: 4</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Nutella" data-target="4"></div>
-</div>
-
-
-<div class="producto" data-nombre="tarjetas de cortesía">
-<div class="semaforo"></div>
-<div class="nombre">Tarjetas de cortesía<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Tarjetas de cortesía" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="etiquetas">
-<div class="semaforo"></div>
-<div class="nombre">Etiquetas<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Etiquetas" data-target="1"></div>
-</div>
+  <div>¡Lista copiada! ✨</div>
 
 </div>
 
 
 <!-- =========================
-     COMIDA
+     NOMBRE
 ========================= -->
 
-<div class="seccion comida">
+<div class="name-overlay" id="nameOverlay">
 
-<div class="tituloSeccion">
-    🍔 Comida
-</div>
+  <div class="name-modal">
 
+    <div class="name-bear">🧸</div>
 
-<div class="producto" data-nombre="mayonesa">
-<div class="semaforo"></div>
-<div class="nombre">Mayonesa<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Mayonesa" data-target="1"></div>
-</div>
+    <h2>¡Bienvenido a Beary's! ☕</h2>
 
+    <p>
+      Primero dime cómo te gustaría que te llamemos.
+      Tu nombre se guardará <b>solo en este dispositivo</b>.
+    </p>
 
-<div class="producto" data-nombre="mostaza">
-<div class="semaforo"></div>
-<div class="nombre">Mostaza<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Mostaza" data-target="1"></div>
-</div>
+    <input
+      id="nameInput"
+      class="name-input"
+      maxlength="24"
+      autocomplete="name"
+      placeholder="Escribe tu nombre..."
+    >
 
+    <button class="name-save" onclick="saveName()">
+      Guardar mi nombre ♡
+    </button>
 
-<div class="producto" data-nombre="aguacate">
-<div class="semaforo"></div>
-<div class="nombre">Aguacate<div class="meta">Meta: 18</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Aguacate" data-target="18"></div>
-</div>
+    <button class="name-change" onclick="closeNameModal()">
+      Ahora no
+    </button>
 
-
-<div class="producto" data-nombre="salsa maggi">
-<div class="semaforo"></div>
-<div class="nombre">Salsa Maggi<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Salsa Maggi" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="salsa inglesa">
-<div class="semaforo"></div>
-<div class="nombre">Salsa inglesa<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Salsa inglesa" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="salsa matcha">
-<div class="semaforo"></div>
-<div class="nombre">Salsa matcha<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Salsa matcha" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="salsa valentina">
-<div class="semaforo"></div>
-<div class="nombre">Salsa Valentina<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Salsa Valentina" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="catsup">
-<div class="semaforo"></div>
-<div class="nombre">Catsup<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Catsup" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="granola">
-<div class="semaforo"></div>
-<div class="nombre">Granola<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Granola" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="miel">
-<div class="semaforo"></div>
-<div class="nombre">Miel<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Miel" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="maple">
-<div class="semaforo"></div>
-<div class="nombre">Maple<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Maple" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="sal">
-<div class="semaforo"></div>
-<div class="nombre">Sal<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Sal" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="galletas de cortesia">
-<div class="semaforo"></div>
-<div class="nombre">Galletas de cortesia<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Galletas de cortesia" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="galletas de limón">
-<div class="semaforo"></div>
-<div class="nombre">Galletas de Limón<div class="meta">Meta: 5</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Galletas de Limón" data-target="5"></div>
-</div>
-
-
-<div class="producto" data-nombre="galletas de pistache">
-<div class="semaforo"></div>
-<div class="nombre">Galletas de Pistache<div class="meta">Meta: 5</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Galletas de Pistache" data-target="5"></div>
-</div>
-
-
-<div class="producto" data-nombre="huevo">
-<div class="semaforo"></div>
-<div class="nombre">Huevo<div class="meta">Meta: 3</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Huevo" data-target="3"></div>
-</div>
-
-
-<div class="producto" data-nombre="comandas">
-<div class="semaforo"></div>
-<div class="nombre">Comandas<div class="meta">Meta: 5</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Comandas" data-target="5"></div>
-</div>
-
-
-<div class="producto" data-nombre="tartas">
-<div class="semaforo"></div>
-<div class="nombre">Tartas<div class="meta">Meta: 30</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Tartas" data-target="30"></div>
-</div>
-
-
-<div class="producto" data-nombre="leche deslactosada">
-<div class="semaforo"></div>
-<div class="nombre">Leche deslactosada<div class="meta">Meta: 24</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Leche deslactosada" data-target="24"></div>
-</div>
-
-
-<div class="producto" data-nombre="leche entera">
-<div class="semaforo"></div>
-<div class="nombre">Leche entera<div class="meta">Meta: 15</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Leche entera" data-target="15"></div>
-</div>
-
-
-<div class="producto" data-nombre="leche light">
-<div class="semaforo"></div>
-<div class="nombre">Leche light<div class="meta">Meta: 6</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Leche light" data-target="6"></div>
-</div>
-
-
-<div class="producto" data-nombre="leche deslactosada light">
-<div class="semaforo"></div>
-<div class="nombre">Leche deslactosada light<div class="meta">Meta: 6</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Leche deslactosada light" data-target="6"></div>
-</div>
-
-
-<div class="producto" data-nombre="leche de almendra">
-<div class="semaforo"></div>
-<div class="nombre">Leche de almendra<div class="meta">Meta: 4</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Leche de almendra" data-target="4"></div>
-</div>
-
-
-<div class="producto" data-nombre="leche de coco">
-<div class="semaforo"></div>
-<div class="nombre">Leche de coco<div class="meta">Meta: 3</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Leche de coco" data-target="3"></div>
-</div>
-
-
-<div class="producto" data-nombre="leche de avena">
-<div class="semaforo"></div>
-<div class="nombre">Leche de avena<div class="meta">Meta: 4</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Leche de avena" data-target="4"></div>
-</div>
-
-
-<div class="producto" data-nombre="leche de soya">
-<div class="semaforo"></div>
-<div class="nombre">Leche de soya<div class="meta">Meta: 4</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Leche de soya" data-target="4"></div>
-</div>
-
-
-<div class="producto" data-nombre="concentrado de fresa">
-<div class="semaforo"></div>
-<div class="nombre">Concentrado de fresa<div class="meta">Meta: 2</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Concentrado de fresa" data-target="2"></div>
-</div>
-
-
-<div class="producto" data-nombre="concentrado de maracuya">
-<div class="semaforo"></div>
-<div class="nombre">Concentrado de maracuya<div class="meta">Meta: 2</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Concentrado de maracuya" data-target="2"></div>
-</div>
-
-
-<div class="producto" data-nombre="concentrado de mango">
-<div class="semaforo"></div>
-<div class="nombre">Concentrado de mango<div class="meta">Meta: 2</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Concentrado de mango" data-target="2"></div>
-</div>
-
-
-<div class="producto" data-nombre="pink lemonade">
-<div class="semaforo"></div>
-<div class="nombre">Pink lemonade<div class="meta">Meta: 2</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Pink lemonade" data-target="2"></div>
-</div>
-
-
-<div class="producto" data-nombre="caramelo">
-<div class="semaforo"></div>
-<div class="nombre">Caramelo<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Caramelo" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="tortillas">
-<div class="semaforo"></div>
-<div class="nombre">Tortillas<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Tortillas" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="chapatas">
-<div class="semaforo"></div>
-<div class="nombre">Chapatas<div class="meta">Meta: 20</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Chapatas" data-target="20"></div>
-</div>
-
-
-<div class="producto" data-nombre="croissant">
-<div class="semaforo"></div>
-<div class="nombre">Croissant<div class="meta">Meta: 15</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Croissant" data-target="15"></div>
-</div>
-
-
-<div class="producto" data-nombre="trapos limpios">
-<div class="semaforo"></div>
-<div class="nombre">Trapos limpios<div class="meta">Meta: 50</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Trapos limpios" data-target="50"></div>
-</div>
-
-
-<div class="producto" data-nombre="bolsa para trapos">
-<div class="semaforo"></div>
-<div class="nombre">Bolsa para trapos<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Bolsa para trapos" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="velcro">
-<div class="semaforo"></div>
-<div class="nombre">Velcro<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Velcro" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="osos para bebidas">
-<div class="semaforo"></div>
-<div class="nombre">Osos para bebidas<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Osos para bebidas" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="osos grandes">
-<div class="semaforo"></div>
-<div class="nombre">Osos grandes<div class="meta">Meta: 10</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Osos grandes" data-target="10"></div>
-</div>
-
-
-<div class="producto" data-nombre="limpiador de horno">
-<div class="semaforo"></div>
-<div class="nombre">Limpiador de horno<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Limpiador de horno" data-target="1"></div>
-</div>
-
-
-<div class="producto" data-nombre="protector de horno">
-<div class="semaforo"></div>
-<div class="nombre">Protector de horno<div class="meta">Meta: 1</div><div class="faltante"></div></div>
-<div class="entrada"><span>Tengo</span><input type="number" min="0" data-name="Protector de horno" data-target="1"></div>
-</div>
-
-</div>
-
-</div>
-
-
-<!-- =========================
-     RESULTADO
-========================= -->
-
-<div class="resultado" id="resultado">
-
-    <h2>🛒 Lista de compras</h2>
-
-    <div id="listaFinal"></div>
-
-</div>
-
-
-<!-- =========================
-     SIN RESULTADOS
-========================= -->
-
-<div id="sinResultados">
-    🐻💭 No encontré ese producto...
-</div>
-
-
-<!-- =========================
-     ANIMACIÓN CUTE
-========================= -->
-
-<div class="animacionCute" id="animacionCute">
-
-    <div class="corazones corazon1">💗</div>
-    <div class="corazones corazon2">✨</div>
-    <div class="corazones corazon3">💕</div>
-    <div class="corazones corazon4">✨</div>
-
-    <div class="osito">
-        🐻
-    </div>
-
-    <div class="mensajeCute" id="mensajeCute">
-        ¡Lista lista! 💗
-    </div>
+  </div>
 
 </div>
 
 
 <script>
 
-/* =========================
-   FECHA
-========================= */
+/* =========================================================
+   NOMBRE
+   ========================================================= */
 
-function mostrarFecha(){
+function loadName(){
 
-    const fecha = new Date();
+  const saved=localStorage.getItem("bearyUserName");
 
-    const texto = fecha.toLocaleDateString(
-        "es-MX",
-        {
-            weekday:"long",
-            day:"numeric",
-            month:"long",
-            year:"numeric"
-        }
+  if(saved){
+
+    document.getElementById("welcomeName").textContent=saved;
+
+  }else{
+
+    setTimeout(
+      ()=>document.getElementById("nameOverlay").classList.add("show"),
+      450
     );
 
-    document.getElementById("fecha").textContent = texto;
+  }
+
 }
 
 
-/* =========================
-   GUARDAR INVENTARIO
-========================= */
+function saveName(){
 
-const inputs = document.querySelectorAll(
-    'input[type="number"]'
+  const input=document.getElementById("nameInput");
+
+  const name=input.value.trim();
+
+  if(!name){
+
+    input.focus();
+
+    showToast("🧸 Escribe tu nombre primero");
+
+    return;
+  }
+
+  localStorage.setItem("bearyUserName",name);
+
+  document.getElementById("welcomeName").textContent=name;
+
+  syncSettingsUI();
+
+  document.getElementById("nameOverlay").classList.remove("show");
+
+  showToast("☕ ¡Bienvenido, "+name+"!");
+
+}
+
+
+function closeNameModal(){
+
+  document.getElementById("nameOverlay").classList.remove("show");
+
+  if(!localStorage.getItem("bearyUserName")){
+
+    document.getElementById("welcomeName").textContent="amigo";
+
+  }
+
+}
+
+
+function changeName(){
+
+  const old=localStorage.getItem("bearyUserName")||"";
+
+  document.getElementById("nameInput").value=old;
+
+  document.getElementById("nameOverlay").classList.add("show");
+
+  setTimeout(
+    ()=>document.getElementById("nameInput").focus(),
+    80
+  );
+
+}
+
+
+document.getElementById("nameInput").addEventListener(
+  "keydown",
+  e=>{
+    if(e.key==="Enter")saveName();
+  }
 );
 
-inputs.forEach(input => {
 
-    const nombre = input.dataset.name;
+/* =========================================================
+   DATE / SETTINGS / PERSONALIZATION
+   ========================================================= */
 
-    const guardado =
-        localStorage.getItem(
-            "bearys_" + nombre
-        );
+const weekdayShort=[
+  "dom",
+  "lun",
+  "mar",
+  "mié",
+  "jue",
+  "vie",
+  "sáb"
+];
 
-    if(guardado !== null){
-        input.value = guardado;
-        actualizarSemaforo(input);
-    }
-
-    input.addEventListener(
-        "input",
-        function(){
-
-            localStorage.setItem(
-                "bearys_" + nombre,
-                input.value
-            );
-
-            actualizarSemaforo(input);
-
-        }
-    );
-
-});
-
-
-/* =========================
-   SEMÁFORO
-========================= */
-
-function actualizarSemaforo(input){
-
-    const producto =
-        input.closest(".producto");
-
-    const semaforo =
-        producto.querySelector(".semaforo");
-
-    const faltante =
-        producto.querySelector(".faltante");
-
-    const target =
-        parseFloat(input.dataset.target);
-
-    const valor =
-        input.value;
-
-    /* Limpiar */
-
-    producto.classList.remove(
-        "verde",
-        "amarillo",
-        "rojo",
-        "sinCantidad"
-    );
-
-    semaforo.classList.remove(
-        "verde",
-        "amarillo",
-        "rojo"
-    );
-
-    faltante.classList.remove(
-        "verde",
-        "amarillo",
-        "rojo"
-    );
+const monthShort=[
+  "ene",
+  "feb",
+  "mar",
+  "abr",
+  "may",
+  "jun",
+  "jul",
+  "ago",
+  "sep",
+  "oct",
+  "nov",
+  "dic"
+];
 
 
-    /* No capturado */
+function updateBrandDate(){
 
-    if(
-        valor === "" ||
-        valor === null
-    ){
+  const now=new Date();
 
-        producto.classList.add(
-            "sinCantidad"
-        );
+  const date=
+    `${weekdayShort[now.getDay()]} ${now.getDate()} de ${monthShort[now.getMonth()]}`;
 
-        faltante.textContent = "";
-
-        return;
-    }
-
-
-    const tengo =
-        parseFloat(valor);
-
-
-    const porcentaje =
-        tengo / target;
-
-
-    /* VERDE */
-
-    if(porcentaje >= 1){
-
-        producto.classList.add("verde");
-        semaforo.classList.add("verde");
-
-        faltante.classList.add("verde");
-
-        faltante.textContent =
-            "✓ Suficiente";
-
-    }
-
-
-    /* AMARILLO */
-
-    else if(porcentaje >= 0.5){
-
-        producto.classList.add("amarillo");
-        semaforo.classList.add("amarillo");
-
-        faltante.classList.add("amarillo");
-
-        const falta =
-            Math.max(0,target - tengo);
-
-        faltante.textContent =
-            "⚠️ Te faltan " + falta;
-
-    }
-
-
-    /* ROJO */
-
-    else{
-
-        producto.classList.add("rojo");
-        semaforo.classList.add("rojo");
-
-        faltante.classList.add("rojo");
-
-        const falta =
-            Math.max(0,target - tengo);
-
-        faltante.textContent =
-            "🚨 Te faltan " + falta;
-
-    }
+  document.getElementById("brandDate").textContent=date;
 
 }
 
 
-/* =========================
+function syncSettingsUI(){
+
+  const name=
+    localStorage.getItem("bearyUserName")||"Sin nombre";
+
+  const settingsName=
+    document.getElementById("settingsName");
+
+  if(settingsName)
+    settingsName.textContent=name;
+
+
+  const dark=
+    document.body.classList.contains("dark");
+
+  const title=
+    document.getElementById("appearanceTitle");
+
+  const icon=
+    document.getElementById("settingsThemeIcon");
+
+
+  if(title)
+    title.textContent=dark?"Modo noche":"Modo claro";
+
+  if(icon)
+    icon.textContent=dark?"🌙":"☀️";
+
+
+  const animOn=
+    localStorage.getItem("bearyAnimations")!=="off";
+
+  document.body.classList.toggle(
+    "animations-off",
+    !animOn
+  );
+
+
+  const toggle=
+    document.getElementById("animationToggle");
+
+  if(toggle){
+
+    toggle.textContent=animOn?"ON":"OFF";
+
+    toggle.classList.toggle(
+      "off",
+      !animOn
+    );
+
+    toggle.classList.toggle(
+      "on",
+      animOn
+    );
+
+  }
+
+}
+
+
+function openSettings(){
+
+  openPage("settings");
+
+  syncSettingsUI();
+
+}
+
+
+function toggleAnimations(event){
+
+  if(event)
+    event.stopPropagation();
+
+  const off=
+    localStorage.getItem("bearyAnimations")==="off";
+
+  localStorage.setItem(
+    "bearyAnimations",
+    off?"on":"off"
+  );
+
+  syncSettingsUI();
+
+  showToast(
+    off
+      ?"✨ Animaciones activadas"
+      :"🫧 Animaciones desactivadas"
+  );
+
+}
+
+
+function clearLocalData(){
+
+  if(
+    !confirm(
+      "¿Borrar el nombre y las cantidades guardadas en este dispositivo?"
+    )
+  )
+    return;
+
+
+  Object
+    .keys(localStorage)
+    .filter(k=>k.startsWith("bearyInv_"))
+    .forEach(
+      k=>localStorage.removeItem(k)
+    );
+
+
+  localStorage.removeItem("bearyUserName");
+
+  showToast("🧹 Datos locales borrados");
+
+  setTimeout(
+    ()=>location.reload(),
+    650
+  );
+
+}
+
+
+function updateDateEveryMinute(){
+
+  updateBrandDate();
+
+  setInterval(
+    updateBrandDate,
+    60000
+  );
+
+}
+
+
+/* =========================================================
+   NAVEGACIÓN
+   ========================================================= */
+
+function openPage(page){
+
+  document
+    .querySelectorAll(".page")
+    .forEach(
+      p=>p.classList.remove("active")
+    );
+
+
+  const target=
+    document.getElementById(page+"Page");
+
+  if(target)
+    target.classList.add("active");
+
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+
+  updateNavigation(page);
+
+
+  if(page==="inventory")
+    updateInventoryStats();
+
+}
+
+
+function goHome(){
+
+  document
+    .querySelectorAll(".page")
+    .forEach(
+      p=>p.classList.remove("active")
+    );
+
+
+  document
+    .getElementById("homePage")
+    .classList.add("active");
+
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+
+  updateNavigation("home");
+
+}
+
+
+function updateNavigation(page){
+
+  const b=
+    document.querySelectorAll(".nav-button");
+
+  b.forEach(
+    x=>x.classList.remove("active")
+  );
+
+
+  if(page==="home")
+    b[0].classList.add("active");
+
+  else if(page==="inventory")
+    b[1].classList.add("active");
+
+  else if(
+    ["opening","closing","cleaning"].includes(page)
+  )
+    b[2].classList.add("active");
+
+  else if(page==="recipes")
+    b[3].classList.add("active");
+
+  else if(page==="history")
+    b[4].classList.add("active");
+
+}
+
+
+function toggleTheme(){
+
+  document.body.classList.toggle("dark");
+
+  const dark=
+    document.body.classList.contains("dark");
+
+  document.getElementById("themeToggle").textContent=
+    dark?"☀️":"🌙";
+
+  localStorage.setItem(
+    "bearyTheme",
+    dark?"dark":"light"
+  );
+
+  syncSettingsUI();
+
+  showToast(
+    dark
+      ?"🌙 Modo noche activado"
+      :"☀️ Modo claro activado"
+  );
+
+}
+
+
+if(
+  localStorage.getItem("bearyTheme")==="dark"
+){
+
+  document.body.classList.add("dark");
+
+  document.getElementById("themeToggle").textContent="☀️";
+
+}
+
+
+/* =========================================================
+   FRASES
+   ========================================================= */
+
+const phrases=[
+
+  "“Hoy también cuenta cada pequeño esfuerzo.”",
+
+  "“Un latte preparado con cariño siempre sabe diferente.”",
+
+  "“No tienes que hacerlo perfecto, solo hacerlo con cariño.”",
+
+  "“Cada pequeño detalle hace especial a Beary's.”",
+
+  "“Respira, prepara tu area y disfruta el momento.”",
+
+  "“Detrás de cada buenos chilaquiles hay alguien que puso atención.”",
+
+  "“Hoy puede ser un día bonito, incluso en los días pesados.”",
+
+  "“Hazlo con calma, con cariño y con una sonrisa. 🧸”"
+
+];
+
+
+let currentPhrase=0;
+
+
+function nextPhrase(){
+
+  currentPhrase=
+    (currentPhrase+1)%phrases.length;
+
+  const t=
+    document.getElementById("phraseText");
+
+  t.style.opacity="0";
+
+
+  setTimeout(()=>{
+
+    t.textContent=
+      phrases[currentPhrase];
+
+    document.getElementById(
+      "phraseNumber"
+    ).textContent=
+      `${currentPhrase+1} / ${phrases.length}`;
+
+    t.style.opacity="1";
+
+  },150);
+
+}
+
+
+/* =========================================================
+   INVENTARIO
+   =========================================================
+   
+   AHORA CADA PRODUCTO TIENE:
+   
+   { nombre:"Producto", objetivo:1, group:"gris" },
+   
+   Cada producto está en su propia línea.
+   ========================================================= */
+
+const products=[
+
+  { nombre:"Jabón de trastes", objetivo:1, group:"gris" },
+  { nombre:"Jabón de manos", objetivo:1, group:"gris" },
+  { nombre:"Guantes para Baño", objetivo:1, group:"gris" },
+  { nombre:"Guantes para horno", objetivo:1, group:"gris" },
+  { nombre:"Esponja de carita", objetivo:3, group:"gris" },
+  { nombre:"Esponja para vasos", objetivo:3, group:"gris" },
+  { nombre:"Fibra de acero", objetivo:1, group:"gris" },
+  { nombre:"Fibra verde", objetivo:1, group:"gris" },
+  { nombre:"Piedra pómez", objetivo:1, group:"gris" },
+  { nombre:"Fabuloso", objetivo:1, group:"gris" },
+  { nombre:"Kalan", objetivo:1, group:"gris" },
+  { nombre:"Cloro", objetivo:1, group:"gris" },
+  { nombre:"Ajax de baño", objetivo:1, group:"gris" },
+  { nombre:"Ajax limón", objetivo:1, group:"gris" },
+  { nombre:"Aromatizante", objetivo:1, group:"gris" },
+  { nombre:"Windex", objetivo:1, group:"gris" },
+  { nombre:"Drano", objetivo:1, group:"gris" },
+  { nombre:"Mechudo", objetivo:1, group:"gris" },
+  { nombre:"Palitos de madera", objetivo:1, group:"gris" },
+  { nombre:"Cafiza", objetivo:1, group:"gris" },
+  { nombre:"Tenedores desechables", objetivo:2, group:"gris" },
+  { nombre:"Cucharas desechables", objetivo:2, group:"gris" },
+  { nombre:"Popotes", objetivo:1, group:"gris" },
+  { nombre:"Bolsas chicas de basura", objetivo:2, group:"gris" },
+  { nombre:"Bolsas grandes de basura", objetivo:1, group:"gris" },
+  { nombre:"Mangas", objetivo:7, group:"gris" },
+  { nombre:"Papel de baño", objetivo:8, group:"gris" },
+  { nombre:"Café", objetivo:2, group:"gris" },
+  { nombre:"Vasos de 16 oz", objetivo:4, group:"gris" },
+  { nombre:"Vasos de 12 oz", objetivo:5, group:"gris" },
+  { nombre:"Vasos transparentes", objetivo:5, group:"gris" },
+  { nombre:"Vasos de 10 oz", objetivo:1, group:"gris" },
+  { nombre:"Vasos de espresso", objetivo:1, group:"gris" },
+  { nombre:"Tapas Negras", objetivo:3, group:"gris" },
+  { nombre:"Tapas Domo", objetivo:2, group:"gris" },
+  { nombre:"Tapas Planas", objetivo:2, group:"gris" },
+  { nombre:"Tapas de Espresso", objetivo:1, group:"gris" },
+  { nombre:"Azúcar", objetivo:1, group:"gris" },
+  { nombre:"Splenda", objetivo:1, group:"gris" },
+  { nombre:"Stevia", objetivo:1, group:"gris" },
+  { nombre:"Guantes", objetivo:1, group:"gris" },
+  { nombre:"Servilletas", objetivo:2, group:"gris" },
+  { nombre:"Servitoallas", objetivo:2, group:"gris" },
+  { nombre:"Sanitas", objetivo:3, group:"gris" },
+  { nombre:"Azúcar mascabado", objetivo:1, group:"gris" },
+  { nombre:"Charolas chicas", objetivo:1, group:"gris" },
+  { nombre:"Charolas grandes", objetivo:1, group:"gris" },
+  { nombre:"Mangas desechables", objetivo:4, group:"gris" },
+  { nombre:"Bolsas para pollo y cochinita", objetivo:3, group:"gris" },
+  { nombre:"Rejillas", objetivo:30, group:"gris" },
+  { nombre:"Totopos", objetivo:16, group:"gris" },
+  { nombre:"Frijoles", objetivo:1, group:"gris" },
+  { nombre:"Té de frutos", objetivo:1, group:"gris" },
+  { nombre:"Té fresa/vainilla", objetivo:1, group:"gris" },
+  { nombre:"Té verde", objetivo:1, group:"gris" },
+  { nombre:"Té Earl Grey", objetivo:1, group:"gris" },
+  { nombre:"Té English", objetivo:1, group:"gris" },
+  { nombre:"Té mango/fresa", objetivo:1, group:"gris" },
+  { nombre:"Té limón", objetivo:1, group:"gris" },
+  { nombre:"Té limón/jengibre", objetivo:1, group:"gris" },
+  { nombre:"Té manzanilla", objetivo:1, group:"gris" },
+  { nombre:"Té manzanilla/vainilla", objetivo:1, group:"gris" },
+  { nombre:"Té de granada", objetivo:1, group:"gris" },
+  { nombre:"Helado de cookie and cream", objetivo:10, group:"gris" },
+  { nombre:"Helado de vainilla", objetivo:4, group:"gris" },
+  { nombre:"Helado de chocolate", objetivo:4, group:"gris" },
+  { nombre:"Helado de fresa", objetivo:10, group:"gris" },
+  { nombre:"Frutos rojos para waffles", objetivo:1, group:"gris" },
+  { nombre:"Harina de waffles", objetivo:1, group:"gris" },
+  { nombre:"Jamón", objetivo:2, group:"gris" },
+  { nombre:"Tocino en trozos", objetivo:2, group:"gris" },
+  { nombre:"Tocino en tiras", objetivo:1, group:"gris" },
+  { nombre:"Jitomate", objetivo:20, group:"gris" },
+  { nombre:"Cebolla", objetivo:4, group:"gris" },
+  { nombre:"Lechuga", objetivo:3, group:"gris" },
+  { nombre:"Limón", objetivo:10, group:"gris" },
+  { nombre:"Chile serrano", objetivo:20, group:"gris" },
+  { nombre:"Manzana", objetivo:4, group:"gris" },
+  { nombre:"Relleno de dulce de leche", objetivo:2, group:"gris" },
+  { nombre:"Relleno de chocolate", objetivo:2, group:"gris" },
+  { nombre:"Relleno de mascarpone", objetivo:2, group:"gris" },
+  { nombre:"Relleno de frutos rojos", objetivo:2, group:"gris" },
+  { nombre:"Salsa verde", objetivo:10, group:"gris" },
+  { nombre:"Salsa roja", objetivo:10, group:"gris" },
+  { nombre:"Cochinita", objetivo:2, group:"gris" },
+  { nombre:"Pollo", objetivo:2, group:"gris" },
+  { nombre:"Crema", objetivo:2, group:"gris" },
+  { nombre:"Crema batida", objetivo:2, group:"gris" },
+  { nombre:"Papas", objetivo:2, group:"gris" },
+
+  { nombre:"Coca", objetivo:7, group:"morado" },
+  { nombre:"Coca zero", objetivo:5, group:"morado" },
+  { nombre:"Coca light", objetivo:5, group:"morado" },
+  { nombre:"Sprite", objetivo:4, group:"morado" },
+  { nombre:"Mundet", objetivo:4, group:"morado" },
+  { nombre:"Flanes", objetivo:5, group:"morado" },
+  { nombre:"Bolsas de pan", objetivo:1, group:"morado" },
+  { nombre:"Bolsas grandes", objetivo:40, group:"morado" },
+  { nombre:"Agua Santa María", objetivo:7, group:"morado" },
+  { nombre:"Topochico", objetivo:6, group:"morado" },
+  { nombre:"Vasos para porciones (llevar)", objetivo:1, group:"morado" },
+  { nombre:"Tapas para porciones (llevar)", objetivo:1, group:"morado" },
+  { nombre:"Papel encerado", objetivo:1, group:"morado" },
+  { nombre:"Turín", objetivo:1, group:"morado" },
+  { nombre:"Chai", objetivo:1, group:"morado" },
+  { nombre:"Chai Mango", objetivo:1, group:"morado" },
+  { nombre:"Taro", objetivo:1, group:"morado" },
+  { nombre:"Matcha", objetivo:1, group:"morado" },
+  { nombre:"Galleta Oreo", objetivo:3, group:"morado" },
+  { nombre:"Suavicremas", objetivo:2, group:"morado" },
+  { nombre:"Galleta Lotus", objetivo:4, group:"morado" },
+  { nombre:"Chocolate Abuelita", objetivo:3, group:"morado" },
+  { nombre:"Chocolate de decoración", objetivo:1, group:"morado" },
+  { nombre:"Café descafeinado", objetivo:1, group:"morado" },
+  { nombre:"Cajeta", objetivo:4, group:"morado" },
+  { nombre:"Crema Lotus", objetivo:1, group:"morado" },
+  { nombre:"Nutella", objetivo:4, group:"morado" },
+  { nombre:"Tarjetas de lealtad", objetivo:1, group:"morado" },
+  { nombre:"Etiquetas", objetivo:1, group:"morado" },
+
+  { nombre:"Mayonesa", objetivo:1, group:"comida" },
+  { nombre:"Chiles en vinagre", objetivo:1, group:"comida" },
+  { nombre:"Mostaza", objetivo:1, group:"comida" },
+  { nombre:"Papaya", objetivo:1, group:"comida" },
+  { nombre:"Aguacate", objetivo:18, group:"comida" },
+  { nombre:"Salsa Maggi", objetivo:1, group:"comida" },
+  { nombre:"Salsa inglesa", objetivo:1, group:"comida" },
+  { nombre:"Salsa matcha", objetivo:1, group:"comida" },
+  { nombre:"Salsa Valentina", objetivo:1, group:"comida" },
+  { nombre:"Catsup", objetivo:1, group:"comida" },
+  { nombre:"Granola", objetivo:1, group:"comida" },
+  { nombre:"Miel", objetivo:1, group:"comida" },
+  { nombre:"Maple", objetivo:1, group:"comida" },
+  { nombre:"Sal", objetivo:1, group:"comida" },
+  { nombre:"Pam", objetivo:1, group:"comida" },
+  { nombre:"Aceite Nutrioli", objetivo:1, group:"comida" },
+  { nombre:"Galletas de cortesia", objetivo:1, group:"comida" },
+  { nombre:"Galletas de Limón", objetivo:5, group:"comida" },
+  { nombre:"Galletas de Pistache", objetivo:5, group:"comida" },
+  { nombre:"Huevo", objetivo:3, group:"comida" },
+  { nombre:"Comandas", objetivo:5, group:"comida" },
+  { nombre:"Tartas", objetivo:30, group:"comida" },
+  { nombre:"Leche deslactosada", objetivo:24, group:"comida" },
+  { nombre:"Leche entera", objetivo:15, group:"comida" },
+  { nombre:"Leche light", objetivo:6, group:"comida" },
+  { nombre:"Leche deslactosada light", objetivo:6, group:"comida" },
+  { nombre:"Leche de almendra", objetivo:4, group:"comida" },
+  { nombre:"Leche de coco", objetivo:3, group:"comida" },
+  { nombre:"Leche de avena", objetivo:4, group:"comida" },
+  { nombre:"Leche de soya", objetivo:4, group:"comida" },
+  { nombre:"Concentrado de fresa", objetivo:2, group:"comida" },
+  { nombre:"Concentrado de maracuya", objetivo:2, group:"comida" },
+  { nombre:"Concentrado de mango", objetivo:2, group:"comida" },
+  { nombre:"Vainilla Francesa", objetivo:2, group:"comida" },
+  { nombre:"Vainilla de Fresa", objetivo:1, group:"comida" },
+  { nombre:"Pink lemonade", objetivo:2, group:"comida" },
+  { nombre:"Caramelo", objetivo:1, group:"comida" },
+  { nombre:"Tortillas", objetivo:1, group:"comida" },
+  { nombre:"Chapatas", objetivo:20, group:"comida" },
+  { nombre:"Croissant", objetivo:15, group:"comida" },
+  { nombre:"Trapos limpios", objetivo:50, group:"comida" },
+  { nombre:"Bolsa para trapos", objetivo:1, group:"comida" },
+  { nombre:"Bombas de chocolate", objetivo:3, group:"comida" },
+  { nombre:"Velcro", objetivo:1, group:"comida" },
+  { nombre:"Osos para bebidas", objetivo:1, group:"comida" },
+  { nombre:"Osos grandes", objetivo:10, group:"comida" },
+  { nombre:"Vaso Beary rosa", objetivo:10, group:"comida" },
+  { nombre:"Vaso Beary rojo", objetivo:10, group:"comida" },
+  { nombre:"Limpiador de horno", objetivo:1, group:"comida" },
+  { nombre:"Protector de horno", objetivo:1, group:"comida" }
+
+];
+
+
+const groups={
+
+  gris:[
+    "📦 Bodega, refri y limpieza",
+    "📦"
+  ],
+
+  morado:[
+    "☕ Bebidas",
+    "☕"
+  ],
+
+  comida:[
+    "🍔 Comida",
+    "🍔"
+  ]
+
+};
+
+
+function key(i){
+
+  return "bearyInv_"+i;
+
+}
+
+
+function esc(s){
+
+  return s.replace(
+    /[&<>"']/g,
+    m=>({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+    }[m])
+  );
+
+}
+
+
+/* =========================================================
+   CONSTRUIR INVENTARIO
+   ========================================================= */
+
+function buildInventory(){
+
+  const box=
+    document.getElementById("inventoryAreas");
+
+  box.innerHTML="";
+
+
+  Object.keys(groups).forEach(group=>{
+
+    const list=
+      products
+        .map((p,i)=>({...p,i}))
+        .filter(p=>p.group===group);
+
+
+    const area=
+      document.createElement("div");
+
+    area.className="inventory-area";
+
+    area.dataset.group=group;
+
+
+    area.innerHTML=`
+
+      <div class="inventory-area-title">
+
+        <h2>${groups[group][0]}</h2>
+
+        <span>${list.length} productos</span>
+
+      </div>
+
+    `;
+
+
+    list.forEach(p=>{
+
+      const saved=
+        localStorage.getItem(key(p.i));
+
+
+      const row=
+        document.createElement("div");
+
+      row.className="product-row";
+
+      row.dataset.name=
+        p.nombre.toLowerCase();
+
+
+      row.innerHTML=`
+
+        <div class="product-info">
+
+          <div class="product-name">
+            ${esc(p.nombre)}
+          </div>
+
+          <div class="product-meta">
+            Meta: ${p.objetivo}
+          </div>
+
+        </div>
+
+
+        <div class="product-controls">
+
+          <span class="traffic"></span>
+
+          <input
+            class="quantity"
+            type="number"
+            min="0"
+            step="any"
+            inputmode="numeric"
+            data-index="${p.i}"
+            value="${saved??""}"
+          >
+
+        </div>
+
+      `;
+
+
+      const input=
+        row.querySelector("input");
+
+      const dot=
+        row.querySelector(".traffic");
+
+
+      input.addEventListener(
+        "input",
+        ()=>{
+          localStorage.setItem(
+            key(p.i),
+            input.value
+          );
+
+          traffic(
+            input,
+            dot,
+            p.objetivo
+          );
+
+          updateStats();
+        }
+      );
+
+
+      if(saved!==null){
+
+        traffic(
+          input,
+          dot,
+          p.objetivo
+        );
+
+      }
+
+
+      area.appendChild(row);
+
+    });
+
+
+    box.appendChild(area);
+
+  });
+
+
+  updateStats();
+
+}
+
+
+/* =========================================================
+   SEMÁFORO
+   ========================================================= */
+
+function traffic(input,dot,target){
+
+  dot.className="traffic";
+
+  const v=
+    parseFloat(input.value);
+
+  if(Number.isNaN(v))
+    return;
+
+
+  if(v>=target){
+
+    dot.classList.add("green");
+
+  }else if(v>=target*.5){
+
+    dot.classList.add("yellow");
+
+  }else{
+
+    dot.classList.add("red");
+
+  }
+
+}
+
+
+/* =========================================================
+   ESTADÍSTICAS
+   ========================================================= */
+
+function updateStats(){
+
+  let filled=0;
+
+  let complete=0;
+
+  let low=0;
+
+
+  products.forEach((p,i)=>{
+
+    const el=
+      document.querySelector(
+        `.quantity[data-index="${i}"]`
+      );
+
+
+    if(!el || el.value==="")
+      return;
+
+
+    filled++;
+
+
+    const v=
+      parseFloat(el.value);
+
+
+    if(v>=p.objetivo)
+      complete++;
+
+    else
+      low++;
+
+  });
+
+
+  const pct=
+    Math.round(
+      filled/products.length*100
+    );
+
+
+  document.getElementById(
+    "statTotal"
+  ).textContent=
+    products.length;
+
+
+  document.getElementById(
+    "statComplete"
+  ).textContent=
+    complete;
+
+
+  document.getElementById(
+    "statLow"
+  ).textContent=
+    low;
+
+
+  document.getElementById(
+    "inventoryProgress"
+  ).style.width=
+    pct+"%";
+
+
+  document.getElementById(
+    "inventoryProgressText"
+  ).textContent=
+    pct+"% completo";
+
+}
+
+
+/* =========================================================
+   BUSCADOR
+   ========================================================= */
+
+document
+  .getElementById("inventorySearch")
+  .addEventListener(
+    "input",
+    function(){
+
+      const q=
+        this.value
+          .toLowerCase()
+          .trim();
+
+
+      document
+        .querySelectorAll(".inventory-area")
+        .forEach(area=>{
+
+          let n=0;
+
+
+          area
+            .querySelectorAll(".product-row")
+            .forEach(row=>{
+
+              const ok=
+                !q ||
+                row.dataset.name.includes(q);
+
+
+              row.style.display=
+                ok?"flex":"none";
+
+
+              if(ok)
+                n++;
+
+            });
+
+
+          area.style.display=
+            n?"block":"none";
+
+        });
+
+    }
+  );
+
+
+/* =========================================================
    GENERAR LISTA
-========================= */
+   ========================================================= */
 
-function generarYCopiar(){
+function generateInventoryList(){
 
-    let lista =
-        "🐻 BEARY'S COFFEE SHOP\n";
-
-    lista +=
-        "🛒 LISTA DE RESTOCK\n\n";
-
-    let hayAlgo = false;
+  const faltantes=[];
 
 
-    const productos =
-        document.querySelectorAll(
-            ".producto"
+  products.forEach((producto,i)=>{
+
+    const input=
+      document.querySelector(
+        `.quantity[data-index="${i}"]`
+      );
+
+
+    if(!input)
+      return;
+
+
+    const valor=
+      parseFloat(input.value);
+
+
+    if(Number.isNaN(valor))
+      return;
+
+
+    if(valor<producto.objetivo){
+
+      const falta=
+        producto.objetivo-valor;
+
+
+      faltantes.push(
+        `${producto.nombre}: ${falta}`
+      );
+
+    }
+
+  });
+
+
+  const resultado=
+    document.getElementById(
+      "inventoryResult"
+    );
+
+
+  const mensaje=
+    document.getElementById(
+      "inventoryMessage"
+    );
+
+
+  if(faltantes.length===0){
+
+    const texto=
+      "URGENTES\n\nNo hay faltantes ✨";
+
+
+    resultado.value=texto;
+
+    mensaje.textContent=
+      "¡Todo está completo! 🐻";
+
+
+    showBear();
+
+    return;
+
+  }
+
+
+  const texto=
+    "URGENTES\n\n"+
+    faltantes.join("\n");
+
+
+  resultado.value=texto;
+
+
+  mensaje.textContent=
+    "¡Lista generada y copiada! 🐻☕";
+
+
+  copyText(texto);
+
+}
+
+
+/* =========================================================
+   COPIAR
+   ========================================================= */
+
+async function copyText(text){
+
+  try{
+
+    await navigator.clipboard.writeText(text);
+
+    showBear();
+
+  }catch(e){
+
+    const t=
+      document.createElement("textarea");
+
+
+    t.value=text;
+
+    t.setAttribute(
+      "readonly",
+      ""
+    );
+
+
+    t.style.position="fixed";
+
+    t.style.opacity="0";
+
+
+    document.body.appendChild(t);
+
+    t.select();
+
+
+    try{
+
+      document.execCommand("copy");
+
+      showBear();
+
+    }catch(x){
+
+      document.getElementById(
+        "inventoryMessage"
+      ).textContent=
+        "Lista generada. Cópiala manualmente 🐻";
+
+    }
+
+
+    t.remove();
+
+  }
+
+}
+
+
+function showBear(){
+
+  const p=
+    document.getElementById("bearPop");
+
+
+  p.classList.add("show");
+
+
+  setTimeout(
+    ()=>p.classList.remove("show"),
+    1600
+  );
+
+}
+
+
+/* =========================================================
+   NUEVA LISTA
+   ========================================================= */
+
+function newInventoryList(){
+
+  if(
+    !confirm(
+      "¿Seguro que quieres limpiar toda la lista actual? 🐻"
+    )
+  )
+    return;
+
+
+  products.forEach(
+    (p,i)=>
+      localStorage.removeItem(
+        key(i)
+      )
+  );
+
+
+  document
+    .querySelectorAll(".quantity")
+    .forEach(x=>{
+
+      x.value="";
+
+      x
+        .parentElement
+        .querySelector(".traffic")
+        .className="traffic";
+
+    });
+
+
+  document.getElementById(
+    "inventoryResult"
+  ).value="";
+
+
+  document.getElementById(
+    "inventoryMessage"
+  ).textContent=
+    "✨ Lista nueva lista para comenzar 🐻";
+
+
+  document.getElementById(
+    "inventorySearch"
+  ).value="";
+
+
+  document
+    .querySelectorAll(".inventory-area")
+    .forEach(
+      a=>a.style.display="block"
+    );
+
+
+  document
+    .querySelectorAll(".product-row")
+    .forEach(
+      r=>r.style.display="flex"
+    );
+
+
+  updateStats();
+
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+let toastTimer;
+
+
+function showToast(msg){
+
+  const t=
+    document.getElementById("toast");
+
+
+  t.textContent=msg;
+
+  t.classList.add("show");
+
+
+  clearTimeout(toastTimer);
+
+
+  toastTimer=
+    setTimeout(
+      ()=>t.classList.remove("show"),
+      1800
+    );
+
+}
+
+
+/* =========================================================
+   FORMATO URGENTES
+   ========================================================= */
+
+function testUrgentesFormat(){
+
+  const ejemplo=[
+    "Jabón de manos: 1",
+    "Café: 1",
+    "Leche entera: 5"
+  ];
+
+
+  const texto=
+    "URGENTES\n\n"+
+    ejemplo.join("\n");
+
+
+  return texto.startsWith(
+    "URGENTES\n\n"
+  )
+  &&
+  !texto.includes("*URGENTES")
+  &&
+  !texto.includes("🚨");
+
+}
+
+
+/* =========================================================
+   INICIO
+   ========================================================= */
+
+buildInventory();
+
+loadName();
+
+updateBrandDate();
+
+updateDateEveryMinute();
+
+syncSettingsUI();
+
+console.assert(
+  testUrgentesFormat(),
+  "Formato URGENTES inválido"
+);
+
+
+/* =========================================================
+   MICROINTERACCIONES Y PROTECCIONES
+   ========================================================= */
+
+(function(){
+
+  const buttons=
+    document.querySelectorAll("button");
+
+
+  buttons.forEach(btn=>{
+
+    btn.addEventListener(
+      "click",
+      ()=>{
+
+        btn.classList.remove(
+          "tap-feedback"
         );
 
 
-    productos.forEach(producto => {
-
-        const input =
-            producto.querySelector(
-                'input[type="number"]'
-            );
-
-        if(!input) return;
+        void btn.offsetWidth;
 
 
-        const valor =
-            input.value;
+        btn.classList.add(
+          "tap-feedback"
+        );
+
+      }
+    );
+
+  });
+
+
+  document.addEventListener(
+    "keydown",
+    e=>{
+
+      if(e.key==="Escape"){
+
+        const modal=
+          document.getElementById(
+            "nameOverlay"
+          );
 
 
         if(
-            valor === "" ||
-            valor === null
-        ){
-            return;
-        }
-
-
-        const tengo =
-            parseFloat(valor);
-
-
-        const target =
-            parseFloat(
-                input.dataset.target
-            );
-
-
-        const falta =
-            target - tengo;
-
-
-        if(falta > 0){
-
-            if(!hayAlgo){
-
-                lista +=
-                    "📦 PRODUCTOS A SURTIR\n\n";
-
-                hayAlgo = true;
-
-            }
-
-
-            lista +=
-                "• " +
-                input.dataset.name +
-                ": " +
-                falta +
-                "\n";
-
-        }
-
-    });
-
-
-    if(!hayAlgo){
-
-        lista +=
-            "✨ No hace falta surtir nada.\n";
-
-        lista +=
-            "🐻 ¡Todo está completo!";
-
-    }
-
-
-    document.getElementById(
-        "listaFinal"
-    ).textContent = lista;
-
-
-    document.getElementById(
-        "resultado"
-    ).style.display = "block";
-
-
-    navigator.clipboard.writeText(
-        lista
-    ).catch(() => {});
-
-
-    mostrarAnimacion(
-        hayAlgo
-        ? "¡Lista lista! 🛒💗"
-        : "¡Todo completo! 🐻✨"
-    );
-
-}
-
-
-/* =========================
-   ANIMACIÓN
-========================= */
-
-function mostrarAnimacion(mensaje){
-
-    const animacion =
-        document.getElementById(
-            "animacionCute"
-        );
-
-    document.getElementById(
-        "mensajeCute"
-    ).textContent = mensaje;
-
-
-    animacion.classList.remove(
-        "mostrar"
-    );
-
-
-    void animacion.offsetWidth;
-
-
-    animacion.classList.add(
-        "mostrar"
-    );
-
-}
-
-
-/* =========================
-   NUEVA LISTA
-========================= */
-
-function nuevaLista(){
-
-    const confirmar =
-        confirm(
-            "🐻💗 ¿Quieres borrar las cantidades actuales y comenzar una lista nueva?"
-        );
-
-
-    if(!confirmar){
-        return;
-    }
-
-
-    document
-        .querySelectorAll(
-            'input[type="number"]'
+          modal &&
+          modal.classList.contains("show")
         )
-        .forEach(input => {
+          closeNameModal();
 
-            input.value = "";
-
-            localStorage.removeItem(
-                "bearys_" +
-                input.dataset.name
-            );
-
-            actualizarSemaforo(
-                input
-            );
-
-        });
-
-
-    document.getElementById(
-        "resultado"
-    ).style.display = "none";
-
-
-    mostrarAnimacion(
-        "¡Lista nueva! 🌸🐻"
-    );
-
-}
-
-
-/* =========================
-   BUSCADOR
-========================= */
-
-function buscarProductos(){
-
-    const texto =
-        document
-        .getElementById("buscador")
-        .value
-        .toLowerCase()
-        .trim();
-
-
-    const secciones =
-        document.querySelectorAll(
-            ".seccion"
-        );
-
-
-    let encontrados = 0;
-
-
-    secciones.forEach(seccion => {
-
-        const productos =
-            seccion.querySelectorAll(
-                ".producto"
-            );
-
-
-        let visibles = 0;
-
-
-        productos.forEach(producto => {
-
-            const nombre =
-                producto.dataset.nombre
-                .toLowerCase();
-
-
-            if(
-                nombre.includes(texto)
-            ){
-
-                producto.style.display =
-                    "flex";
-
-                visibles++;
-
-                encontrados++;
-
-            }else{
-
-                producto.style.display =
-                    "none";
-
-            }
-
-        });
-
-
-        if(visibles === 0){
-
-            seccion.style.display =
-                "none";
-
-        }else{
-
-            seccion.style.display =
-                "block";
-
-        }
-
-    });
-
-
-    const sinResultados =
-        document.getElementById(
-            "sinResultados"
-        );
-
-
-    if(
-        texto !== "" &&
-        encontrados === 0
-    ){
-
-        sinResultados.style.display =
-            "block";
-
-    }else{
-
-        sinResultados.style.display =
-            "none";
+      }
 
     }
-
-}
-
-
-/* =========================
-   MODO OSCURO
-========================= */
-
-function cambiarTema(){
-
-    document.body.classList.toggle(
-        "modoOscuro"
-    );
+  );
 
 
-    const oscuro =
-        document.body.classList.contains(
-            "modoOscuro"
-        );
+  document.addEventListener(
+    "visibilitychange",
+    ()=>{
 
-
-    localStorage.setItem(
-        "bearys_modo",
-        oscuro
-        ? "oscuro"
-        : "claro"
-    );
-
-
-    document.getElementById(
-        "botonTema"
-    ).textContent =
-        oscuro
-        ? "☀️ Modo claro"
-        : "🌙 Modo oscuro";
-
-}
-
-
-/* =========================
-   CARGAR TEMA
-========================= */
-
-function cargarTema(){
-
-    const modo =
-        localStorage.getItem(
-            "bearys_modo"
-        );
-
-
-    if(modo === "oscuro"){
-
-        document.body.classList.add(
-            "modoOscuro"
-        );
-
-        document.getElementById(
-            "botonTema"
-        ).textContent =
-            "☀️ Modo claro";
+      if(
+        !document.hidden &&
+        typeof updateStats==="function"
+      )
+        updateStats();
 
     }
+  );
 
-}
-
-
-/* =========================
-   INICIAR
-========================= */
-
-mostrarFecha();
-cargarTema();
+})();
 
 </script>
 
