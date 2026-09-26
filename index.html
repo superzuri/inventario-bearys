@@ -3,12 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#ff76a9">
+<meta name="theme-color" content="#fff4f8" id="metaThemeColor">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Beary's Coffee Shop</title>
 <style>
 /* BEARY'S COFFEE SHOP — UI BASE */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;background-color:var(--bg)}
 button,input,textarea{font:inherit}
 button{border:0}
 button.tap-feedback{animation:tapPulse .22s ease}
@@ -28,15 +30,25 @@ body.dark{
 --nav:rgba(30,22,27,.95);--success:#67d69b;--danger:#ff779d;
 }
 body{
-min-height:100vh;background:var(--bg);color:var(--text);
+min-height:100dvh;background:var(--bg);color:var(--text);
 font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 transition:.3s;padding-bottom:calc(92px + env(safe-area-inset-bottom))
 }
 .app{width:min(100%,620px);margin:auto;padding:0 15px}
+
+/* TOPBAR CORREGIDA PARA ISLA DINÁMICA */
 .topbar{
-height:calc(78px + env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;padding-top:env(safe-area-inset-top);
-margin:0 -15px;padding:0 15px;background:color-mix(in srgb,var(--bg) 84%,transparent);
-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)
+position:sticky;top:0;z-index:100;
+min-height:calc(65px + env(safe-area-inset-top));
+padding-top:calc(env(safe-area-inset-top) + 8px);
+padding-bottom:12px;
+padding-left:max(15px, env(safe-area-inset-left));
+padding-right:max(15px, env(safe-area-inset-right));
+margin:0 -15px;
+display:flex;align-items:center;justify-content:space-between;
+background:color-mix(in srgb,var(--bg) 84%,transparent);
+backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+border-bottom:1px solid var(--border)
 }
 .brand{display:flex;align-items:center;gap:10px}
 .brand-logo{
@@ -152,7 +164,7 @@ border-radius:30px;border:1px solid var(--border);background:var(--surface);box-
 .bottom-nav{
 position:fixed;left:50%;bottom:calc(9px + env(safe-area-inset-bottom));transform:translateX(-50%);
 z-index:200;width:min(590px,calc(100% - 18px));height:70px;display:grid;grid-template-columns:repeat(5,1fr);gap:3px;
-padding:6px;border-radius:25px;border:1px solid var(--border);background:var(--nav);backdrop-filter:blur(24px);
+padding:6px;border-radius:25px;border:1px solid var(--border);background:var(--nav);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
 box-shadow:0 18px 55px rgba(65,25,45,.2)
 }
 .nav-button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-radius:18px;background:transparent;color:var(--muted);cursor:pointer}
@@ -162,7 +174,7 @@ box-shadow:0 18px 55px rgba(65,25,45,.2)
 .bear-pop{position:fixed;left:50%;top:50%;z-index:999;transform:translate(-50%,-50%) scale(.6);opacity:0;pointer-events:none;text-align:center;transition:.25s}
 .bear-pop.show{opacity:1;transform:translate(-50%,-50%) scale(1)}.bear-pop .bear{font-size:78px}
 .bear-pop div:last-child{margin-top:5px;padding:10px 16px;border-radius:18px;background:var(--surface);color:var(--text);font-weight:850;box-shadow:var(--shadow)}
-@media(max-width:370px){.app{padding:0 11px}.topbar{margin:0 -11px;padding:0 11px}.hero{padding:23px 19px}.hero-title{font-size:29px}.hero-bear{right:5px;font-size:74px}.menu-grid{gap:8px}.menu-card{min-height:125px;padding:13px}}
+@media(max-width:370px){.app{padding:0 11px}.topbar{margin:0 -11px;padding-left:11px;padding-right:11px}.hero{padding:23px 19px}.hero-title{font-size:29px}.hero-bear{right:5px;font-size:74px}.menu-grid{gap:8px}.menu-card{min-height:125px;padding:13px}}
 
 .name-overlay{
  position:fixed;inset:0;z-index:900;display:none;align-items:center;justify-content:center;
@@ -312,7 +324,7 @@ body:not(.dark) .bottom-nav{box-shadow:0 18px 55px rgba(168,72,111,.13),0 0 22px
 .empty-module.compact{min-height:300px}
 body.dark .activity-tab.active{box-shadow:0 0 0 1px rgba(255,130,178,.12),0 0 30px rgba(255,91,157,.14)}
 
-/* BEARY'S 2.2 — iPhone / Dynamic Island polish */
+/* BEARY'S 2.2 — iPhone Polish */
 @media (max-width:620px){
   body{overflow-x:hidden;}
   .app{width:100%;max-width:none;padding-left:14px;padding-right:14px;}
@@ -321,11 +333,8 @@ body.dark .activity-tab.active{box-shadow:0 0 0 1px rgba(255,130,178,.12),0 0 30
   .hero{min-height:300px;}
   .bottom-nav{width:calc(100% - 14px);bottom:calc(7px + env(safe-area-inset-bottom));}
 }
-@supports(height:100dvh){body{min-height:100dvh}}
 
 html,body{width:100%;min-width:0;max-width:100%;overflow-x:hidden}
-body{min-height:100dvh}
-.topbar{padding-top:max(10px,env(safe-area-inset-top))}
 .bottom-nav{padding-bottom:max(8px,env(safe-area-inset-bottom))}
 .activity-choice{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0}
 .activity-choice-card{min-height:145px;padding:18px 10px;border:1px solid var(--border);border-radius:24px;background:var(--surface);color:var(--text);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -396,7 +405,6 @@ body{min-height:100dvh}
   <button onclick="openSettings()">⚙️ Ajustes</button>
  </div>
 </section>
-
 
 <section class="page" id="settingsPage">
  <div class="inner-header">
@@ -478,14 +486,17 @@ body{min-height:100dvh}
   <div class="empty-module compact"><div class="empty-icon">🌙</div><h2>Actividades de cierre</h2><p>Aquí irán las tareas necesarias para dejar Beary's listo para el siguiente día.</p></div>
  </div>
 </section>
+
 <section class="page" id="cleaningPage">
  <div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Limpieza 🧼</h1><p>Mantener todo en orden</p></div></div>
  <div class="empty-module"><div class="empty-icon">🧼</div><h2>Lista de limpieza</h2><p>La checklist de limpieza será nuestro siguiente módulo.</p></div>
 </section>
+
 <section class="page" id="recipesPage">
  <div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Recetario ☕</h1><p>Bebidas y preparación</p></div></div>
  <div class="empty-module"><div class="empty-icon">☕</div><h2>Recetario de Beary's</h2><p>Aquí guardaremos recetas, ingredientes, cantidades y preparación de cada bebida.</p></div>
 </section>
+
 <section class="page" id="historyPage">
  <div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Historial 📖</h1><p>Todo el movimiento</p></div></div>
  <div class="empty-module"><div class="empty-icon">📖</div><h2>Historial de Beary's</h2><p>Aquí quedará registrado el movimiento de la aplicación cuando conectemos la base de datos.</p></div>
@@ -503,7 +514,6 @@ body{min-height:100dvh}
 <div class="toast" id="toast"></div>
 <div class="bear-pop" id="bearPop"><div class="bear copy-bear-animation">🐻</div><div>¡Lista copiada! ✨</div></div>
 
-
 <div class="name-overlay" id="nameOverlay">
  <div class="name-modal">
   <div class="name-bear">🧸</div>
@@ -516,7 +526,6 @@ body{min-height:100dvh}
 </div>
 
 <script>
-
 function loadName(){
  const saved=localStorage.getItem("bearyUserName");
  if(saved){
@@ -547,7 +556,6 @@ function changeName(){
 }
 document.getElementById("nameInput").addEventListener("keydown",e=>{if(e.key==="Enter")saveName()});
 
-
 /* DATE / SETTINGS / PERSONALIZATION */
 const weekdayShort=["dom","lun","mar","mié","jue","vie","sáb"];
 const monthShort=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
@@ -572,6 +580,10 @@ function syncSettingsUI(){
  document.body.classList.toggle("animations-off",!animOn);
  const toggle=document.getElementById("animationToggle");
  if(toggle){toggle.textContent=animOn?"ON":"OFF";toggle.classList.toggle("off",!animOn);toggle.classList.toggle("on",animOn)}
+ 
+ // Sincroniza la barra de estado de iOS con el tema actual
+ const metaTheme = document.getElementById("metaThemeColor");
+ if(metaTheme) metaTheme.setAttribute("content", dark ? "#171216" : "#fff4f8");
 }
 
 function openSettings(){
@@ -599,7 +611,6 @@ function updateDateEveryMinute(){
  updateBrandDate();
  setInterval(updateBrandDate,60000);
 }
-
 
 function selectActivityType(type){
  const opening=type==='opening';
